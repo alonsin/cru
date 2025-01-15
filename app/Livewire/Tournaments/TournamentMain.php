@@ -7,9 +7,10 @@ use Livewire\Component;
 class TournamentMain extends Component
 {
 
-    // public function showModalNewPlayer(){
-    //    $this->dispatch("setModalNewPlayer");
-    // }
+    public function showModalNewTournament()
+    {
+        $this->dispatch("setModalNewTournament");
+    }
 
 
     public function render()

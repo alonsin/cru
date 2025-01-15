@@ -17,35 +17,39 @@ class ModalRegistrarJugador extends Component
     public function mount()
     {
         $this->resetDatas();
-        $this->estados = estado::all(); 
-        $this->categorias = categoryPlayer::all(); 
-        $this->clubes = clubPlayer::all(); 
+        $this->estados = estado::all();
+        $this->categorias = categoryPlayer::all();
+        $this->clubes = clubPlayer::all();
     }
 
     protected $listeners = [
-        'setModalNewPlayer' => 'showModal', 
+        'setModalNewPlayer' => 'showModal',
         'edit-data-player' => 'editaPlayer',
-        'delete-data-player' => 'onconfirmdeletePlayer',   
-        'deletePlayerEvent' => 'deletePlayerEvent'   
+        'delete-data-player' => 'onconfirmdeletePlayer',
+        'deletePlayerEvent' => 'deletePlayerEvent'
     ];
 
     public function showModal()
     {
+        $this->resetDatas();
         $this->show = true;
     }
 
-    public function deletePlayerEvent(){
+    public function deletePlayerEvent()
+    {
         $player = Player::find($this->idPlayer);
         $player->delete();
         $this->dispatch('refreshTablePlayers');
     }
 
-    public function onconfirmdeletePlayer($playerId){
+    public function onconfirmdeletePlayer($playerId)
+    {
         $this->idPlayer = $playerId;
-        $this->dispatch("onconfirmDelete", $playerId);        
+        $this->dispatch("onconfirmDelete", $playerId);
     }
 
-    public function editaPlayer($data){
+    public function editaPlayer($data)
+    {
         $player = Player::find($data['id']);
         $this->idPlayer = $player['id'];
         $this->nameplayer = $player['name_player'];
@@ -56,30 +60,34 @@ class ModalRegistrarJugador extends Component
         $this->show = true;
     }
 
-    public function save(){
+    public function save()
+    {
         $data = $this->makingData();
-        if($this->idPlayer != null){
+        if ($this->idPlayer != null) {
             $player = Player::find($this->idPlayer);
             $player->update($data);
-        }else{
-            Player::create($data);            
+        } else {
+            Player::create($data);
         }
         $this->dispatch('refreshTablePlayers');
-        $this->resetDatas();       
+        $this->resetDatas();
         $this->show = false;
     }
 
-    public function resetDatas(){
+    public function resetDatas()
+    {
         $this->reset([
             'nameplayer',
             'estadoSeleccionado',
             'clubSeleccionada',
             'categoriaSeleccionada',
             'edad',
+            'idPlayer',
         ]);
     }
 
-    public function makingData(){
+    public function makingData()
+    {
         return $data = [
             'name_player' => $this->nameplayer,
             'id_state' => $this->estadoSeleccionado, // Asumiendo que el estado con id 1 existe
