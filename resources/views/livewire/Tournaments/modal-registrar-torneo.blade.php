@@ -6,12 +6,12 @@
                 <!-- Campos del formulario -->
                 <div class="mb-4">
                     <label class="block text-gray-700">Nombre:</label>
-                    <input wire:model="nameplayer" type="text" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300" />
+                    <input wire:model="name_tournament" type="text" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300" />
                 </div>
                 <div class="mb-4">
                     <label class="block text-gray-700">Sede Torneo:</label>
-                    <select id="estado" name="estado" wire:model="estadoSeleccionado" class="block w-full px-4 py-2 text-sm border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        <option value="">Selecciona un estado</option>
+                    <select id="estado" name="estado" wire:model="sedeSeleccionado" class="block w-full px-4 py-2 text-sm border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="">Selecciona una sede</option>
                         @foreach ($sedes as $sede)
                         <option value="{{ $sede->id }}">{{ $sede->name }}</option>
                         @endforeach
@@ -19,8 +19,8 @@
                 </div>
                 <div class="mb-4">
                     <label class="block text-gray-700">Tipo Torneo:</label>
-                    <select id="estado" name="estado" wire:model="categoriaSeleccionada" class="block w-full px-4 py-2 text-sm border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        <option value="">Selecciona categoria</option>
+                    <select id="estado" name="estado" wire:model="typeSeleccionada" class="block w-full px-4 py-2 text-sm border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="">Selecciona Tipo Torneo</option>
                         @foreach ($tiposTournament as $type)
                         <option value="{{ $type->id }}">{{ $type->name }}</option>
                         @endforeach
@@ -28,8 +28,8 @@
                 </div>
                 <div class="mb-4">
                     <label class="block text-gray-700">Formato:</label>
-                    <select id="estado" name="club" wire:model="clubSeleccionada" class="block w-full px-4 py-2 text-sm border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        <option value="">Selecciona club</option>
+                    <select id="estado" name="club" wire:model="formatoSeleccionada" class="block w-full px-4 py-2 text-sm border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="">Selecciona formato</option>
                         @foreach ($formatos as $formato)
                         <option value="{{ $formato->id }}">{{ $formato->name }}</option>
                         @endforeach
@@ -40,6 +40,7 @@
                     <input
                         type="date"
                         id="fecha_torneo"
+                        wire:model="fechaTorneo"
                         name="fecha_torneo"
                         class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-700" />
                 </div>

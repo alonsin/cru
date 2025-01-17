@@ -4,6 +4,7 @@ namespace App\Livewire\Tournaments;
 
 use App\Models\formatTournament;
 use App\Models\sedeTournament;
+use App\Models\Tournament;
 use App\Models\typeTournament;
 use Livewire\Component;
 
@@ -11,7 +12,7 @@ class ModalRegistrarTorneo extends Component
 {
     public $show = false;
     public $sedes, $tiposTournament, $formatos = [];
-    public $sedeSeleccionado, $formatoSeleccionada, $typeSeleccionada, $nameTournament, $fechaTorneo, $idTournament;
+    public $sedeSeleccionado, $formatoSeleccionada, $typeSeleccionada, $name_tournament, $fechaTorneo, $idTournament;
 
     public function mount()
     {
@@ -65,29 +66,28 @@ class ModalRegistrarTorneo extends Component
             $tournament = Tournament::find($this->idTournament);
             $tournament->update($data);
         } else {
-            Tournament::create($data);
+            $tournament = Tournament::create($data);
         }
-        $this->dispatch('refreshTablePlayers');
         $this->resetDatas();
         $this->show = false;
+        $this->dispatch("set-new-data-tournaments", $tournament);
     }
 
-    // public function resetDatas()
-    // {
-    //     $this->reset([
-    //         'nameplayer',
-    //         'estadoSeleccionado',
-    //         'clubSeleccionada',
-    //         'categoriaSeleccionada',
-    //         'edad',
-    //         'idPlayer',
-    //     ]);
-    // }
+    public function resetDatas()
+    {
+        $this->reset([
+            'name_tournament',
+            'sedeSeleccionado',
+            'formatoSeleccionada',
+            'typeSeleccionada',
+            'fechaTorneo',
+        ]);
+    }
 
     public function makingData()
     {
         return $data = [
-            'name_tournament' => $this->nameTournament,
+            'name_tournament' => $this->name_tournament,
             'id_sede' => $this->sedeSeleccionado, // Asumiendo que el estado con id 1 existe
             'id_format' => $this->formatoSeleccionada, // Asumiendo que la categoría con id 2 existe
             'id_type' => $this->typeSeleccionada, // Asumiendo que el club con id 3 existe
