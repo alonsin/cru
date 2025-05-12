@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl text-gray-800 leading-tight">
-            {{ __('LISTADO DE TORNEOS REALIZADOS Y EN CURSO') }}
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('TORNEOS') }}
         </h2>
     </x-slot>
 

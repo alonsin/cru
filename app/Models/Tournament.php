@@ -17,5 +17,17 @@ class Tournament extends Model
 		'id_type',
 		'id_format',
 		'fecha_torneo',
+		'status',
 	];
+
+
+	public function type()
+	{
+		return $this->belongsTo(TypeTournament::class, 'id_type');
+	}
+
+	public function sede()
+	{
+		return $this->belongsTo(SedeTournament::class, 'id_sede');
+	}
 }

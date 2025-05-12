@@ -18,7 +18,7 @@
 
                 Livewire.on('onconfirmDelete', (id) => {
                     Swal.fire({
-                        title: '¿Estás seguro de elimiar el registro?',
+                        title: '¿Estás seguro de elimiar el Jugador?',
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',

@@ -8,6 +8,7 @@ use Livewire\Component;
 class TournamentMain extends Component
 {
     public $idTournament;
+    public $selectedTournament;
     public $tournamentsArray = [];
 
     protected $listeners = [
@@ -19,6 +20,10 @@ class TournamentMain extends Component
         $this->tournamentsArray = Tournament::orderBy('id', 'desc')->get();
     }
 
+    public function viewTournament($id)
+    {
+        $this->selectedTournament = Tournament::with(['sede', 'type'])->findOrFail($id);
+    }
 
     public function showModalNewTournament()
     {
@@ -27,6 +32,7 @@ class TournamentMain extends Component
 
     public function mount()
     {
+        $selectedTournament = null;
         $this->tournamentsArray = Tournament::orderBy('id', 'desc')->get();
     }
 
