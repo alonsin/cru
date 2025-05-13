@@ -10,10 +10,10 @@ class Player extends Model
     use SoftDeletes;
     protected $table = 'players';
     protected $fillable = [
-        'name_player', 
-        'id_state', 
-        'id_category_player', 
-        'id_club_player', 
+        'name_player',
+        'id_state',
+        'id_category_player',
+        'id_club_player',
         'edad'
     ];
 
@@ -30,5 +30,11 @@ class Player extends Model
     public function club()
     {
         return $this->belongsTo(clubPlayer::class, 'id_club_player');
+    }
+
+    // Un jugador puede estar en muchos torneos
+    public function tournamentPlayers()
+    {
+        return $this->hasMany(TournamentPlayer::class, 'id_player');
     }
 }

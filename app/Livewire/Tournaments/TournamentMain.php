@@ -32,7 +32,7 @@ class TournamentMain extends Component
 
     public function mount()
     {
-        $selectedTournament = null;
+        $this->selectedTournament = null;
         $this->tournamentsArray = Tournament::orderBy('id', 'desc')->get();
     }
 

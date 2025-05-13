@@ -30,4 +30,10 @@ class Tournament extends Model
 	{
 		return $this->belongsTo(SedeTournament::class, 'id_sede');
 	}
+
+	// Un torneo puede tener muchos jugadores
+	public function tournamentPlayers()
+	{
+		return $this->hasMany(TournamentPlayer::class, 'id_tournament');
+	}
 }

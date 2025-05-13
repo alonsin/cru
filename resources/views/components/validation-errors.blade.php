@@ -1,11 +1,11 @@
 @if ($errors->any())
-    <div {{ $attributes }}>
-        <div class="font-medium text-red-600">{{ __('Whoops! Something went wrong.') }}</div>
+<div {{ $attributes }}>
+    <ul class="mt-3 list-disc list-inside text-sm text-red-600">
+        @foreach ($errors->all() as $error)
 
-        <ul class="mt-3 list-disc list-inside text-sm text-red-600">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+        {{ $error == 'These credentials do not match our records.' ? 'Estas credenciales no coinciden con nuestros registros.' : $error }}
+
+        @endforeach
+    </ul>
+</div>
 @endif
