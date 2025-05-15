@@ -6,22 +6,16 @@ use App\Models\categoryPlayer;
 use App\Models\clubPlayer;
 use App\Models\estado;
 use App\Models\Player;
+use App\Models\TournamentPlayer;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 class ModalRegistrarJugadorTournament extends Component
 {
+    public $idtournament, $idplayer, $horario;
     public $show = false;
     public $estados, $categorias, $clubes = [];
     public $playersall = [];
-    public $estadoSeleccionado, $categoriaSeleccionada, $clubSeleccionada, $nameplayer, $edad, $idPlayer;
-
-    public function mount()
-    {
-        // $this->resetDatas();
-        $this->estados = estado::all();
-        $this->categorias = categoryPlayer::all();
-        $this->clubes = clubPlayer::all();
-    }
 
     protected $listeners = [
         'setModalNewPlayerForTournmnt' => 'showModal',
@@ -29,35 +23,65 @@ class ModalRegistrarJugadorTournament extends Component
 
     public function showModal($id)
     {
-        // $this->resetDatas();
-        // dd("el id es: ", $id);
-        $this->playersall = Player::orderBy('name_player', 'asc')->get();
+        $this->reset('idplayer', 'horario');
+        $this->idtournament = $id;
+
+        $jugadoresRegistrados = TournamentPlayer::where('id_tournament', $this->idtournament)
+            ->pluck('id_player');
+
+        $this->playersall = Player::whereNotIn('id', $jugadoresRegistrados)
+            ->orderBy('name_player', 'asc')
+            ->get();
+
         $this->show = true;
+    }
+
+    public function mount()
+    {
+        $this->reset('idplayer', 'horario');
+    }
+
+    public function validatedata()
+    {
+        try {
+            $this->validate([
+                'idplayer' => 'required',
+                'horario' => 'required',
+            ], [], [
+                'idplayer' => 'Jugador',
+                'horario' => 'Horario',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        }
     }
 
 
     public function save()
     {
-        $data = $this->makingData();
-        if ($this->idPlayer != null) {
-            $player = Player::find($this->idPlayer);
-            $player->update($data);
+        $this->validatedata();
+        $existe = TournamentPlayer::where('id_tournament', $this->idtournament)
+            ->where('id_player', $this->idplayer)
+            ->exists();
+
+        if ($existe) {
+            throw ValidationException::withMessages([
+                'idplayer' => 'El jugador ya está registrado en este torneo.',
+            ]);
         } else {
-            Player::create($data);
+            $data = $this->makingData();
+            TournamentPlayer::create($data);
+            $this->dispatch('refreshTablePlayersTournament');
+            $this->show = false;
         }
-        $this->dispatch('refreshTablePlayers');
-        $this->resetDatas();
-        $this->show = false;
     }
 
     public function makingData()
     {
         return $data = [
-            'name_player' => $this->nameplayer,
-            'id_state' => $this->estadoSeleccionado, // Asumiendo que el estado con id 1 existe
-            'id_category_player' => $this->categoriaSeleccionada, // Asumiendo que la categoría con id 2 existe
-            'id_club_player' => $this->clubSeleccionada, // Asumiendo que el club con id 3 existe
-            'edad' => $this->edad, // La edad es opcional, puede ser NULL si lo deseas
+            'id_tournament' => $this->idtournament,
+            'id_player' => $this->idplayer,
+            'horario' => $this->horario,
         ];
     }
 

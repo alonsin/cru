@@ -42,17 +42,17 @@
 			<div class="card-header bg-white border-bottom-0">
 				<ul class="nav nav-tabs nav-justified flex-column flex-sm-row" id="tournamentTabs" role="tablist">
 					<li class="nav-item" role="presentation">
-						<button class="nav-link active" id="jugadores-tab" data-bs-toggle="tab" data-bs-target="#jugadores" type="button" role="tab">👤 Jugadores</button>
+						<button class="nav-link @if($activeTab === 'jugadores') active @endif" id="jugadores-tab" data-bs-toggle="tab" data-bs-target="#jugadores" type="button" role="tab">👤 Jugadores</button>
 					</li>
 					<li class="nav-item" role="presentation">
-						<button class="nav-link" id="grupos-tab" data-bs-toggle="tab" data-bs-target="#grupos" type="button" role="tab">📋 Grupos</button>
+						<button wire:click="setDataTournament" class="nav-link @if($activeTab === 'grupos') active @endif" id="grupos-tab" data-bs-toggle="tab" data-bs-target="#grupos" type="button" role="tab">📋 Grupos</button>
 					</li>
 					<li class="nav-item" role="presentation">
-						<button class="nav-link" id="ajuste-tab" data-bs-toggle="tab" data-bs-target="#ajuste" type="button" role="tab">⚙ Ajuste</button>
+						<button class="nav-link" id="ajuste-tab" data-bs-toggle="tab" data-bs-target="#ajuste" type="button" role="tab">🎯 Subita</button>
 					</li>
-					<li class="nav-item" role="presentation">
+					<!-- <li class="nav-item" role="presentation">
 						<button class="nav-link" id="ronda32-tab" data-bs-toggle="tab" data-bs-target="#ronda32" type="button" role="tab">🎯 Ronda 32</button>
-					</li>
+					</li> -->
 					<li class="nav-item" role="presentation">
 						<button class="nav-link" id="ronda16-tab" data-bs-toggle="tab" data-bs-target="#ronda16" type="button" role="tab">🎯 Ronda 16</button>
 					</li>
@@ -62,60 +62,25 @@
 				</ul>
 			</div>
 			<div class="card-body tab-content p-4" id="tournamentTabsContent">
-				<div class="tab-pane fade show active" id="jugadores" role="tabpanel">
+				<div class="tab-pane fade @if($activeTab === 'jugadores') show active @endif" id="jugadores" role="tabpanel">
 					<div class="d-flex justify-content-center align-items-center mt-1 mb-3">
-
 						<button wire:click="showModalNewPlayerForTournament()" class="btn btn-success btn-sm">
 							<i class="bi bi-plus-circle me-1"></i> Agregar Jugador
 						</button>
+
+						<button wire:click="saveSorteo()" class="btn btn-secondary btn-sm ms-2">
+							<i class="bi bi-plus-circle me-1"></i> Guardar Sorteo
+						</button>
+
 						<livewire:tournaments.tournament.modal-registrar-jugador-tournament />
 					</div>
-					<div class="table-responsive mt-3">
-						<table class="table table-hover align-middle bg-white shadow rounded-3 overflow-hidden">
-							<thead class="table-light text-center align-middle">
-								<tr>
-									<th class="text-muted">Nombre</th>
-									<th class="text-muted">Horario</th>
-									<th class="text-muted">Club</th>
-									<th class="text-muted">Estado</th>
-									<th class="text-muted">Categoría</th>
-									<th class="text-muted">Sorteo</th>
-								</tr>
-							</thead>
-							<tbody class="text-center">
-								@foreach ($playersTournament as $p)
-								<tr>
-									<td><i class="bi bi-person-circle me-1 text-primary"></i>{{$p->player->name_player}}</td>
-									<td>{{$p->horario}}</td>
-									<td>{{$p->player->club->name}}</td>
-									<td><span>{{$p->player->state->name}}</span></td>
-									<td>
-										@php
-										$categoria = $p->player->category->name ?? '';
-										$clase = match($categoria) {
-										'Maestro' => 'badge bg-success text-white',
-										'Primera' => 'badge bg-warning text-dark',
-										'Segunda' => 'badge bg-primary text-white',
-										'Terceras' => 'badge bg-info text-white',
-										default => 'badge bg-secondary text-white',
-										};
-										@endphp
-										<span class="{{ $clase }}">{{ $categoria }}</span>
-									</td>
-									<td>
-										<input type="number" class="form-control form-control-sm text-center mx-auto d-block" style="width: 90px;" placeholder="N°" min="1">
-									</td>
-								</tr>
-								@endforeach
 
-
-							</tbody>
-						</table>
+					<div class="overflow-x-auto">
+						<livewire:tournaments.tournament.tournament-players-table />
 					</div>
 				</div>
-				<div class="tab-pane fade" id="grupos" role="tabpanel">
-					<h5>Grupos del Torneo</h5>
-					<p>Aquí se muestran los grupos generados para el torneo.</p>
+				<div class="tab-pane fade @if($activeTab === 'grupos') show active @endif" id="grupos" role="tabpanel">
+					<livewire:tournaments.tournament.tournament-players-group />					
 				</div>
 				<div class="tab-pane fade" id="ajuste" role="tabpanel">
 					<h5>Configuración</h5>
@@ -136,4 +101,28 @@
 			</div>
 		</div>
 	</div>
+
+	@script
+	<script>
+		Livewire.on('error-duplicados-sorteo', e => {
+			Swal.fire({
+				icon: 'error',
+				title: 'Error',
+				html: '<b>No se puede guardar</b><br>Hay números de sorteo repetidos.',
+				confirmButtonText: 'Entendido'
+			});
+		});
+
+		Livewire.on('sorteos-guardados', () => {
+			Swal.fire({
+				icon: 'success',
+				title: '¡Guardado!',
+				text: 'Los sorteos se han guardado correctamente.',
+				timer: 2000,
+				showConfirmButton: false
+			});
+		});
+	</script>
+	@endscript
+
 </div>

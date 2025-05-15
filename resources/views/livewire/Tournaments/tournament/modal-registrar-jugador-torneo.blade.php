@@ -5,21 +5,31 @@
             <form>
                 <div class="mb-4">
                     <label class="block text-gray-700">Jugador</label>
-                    <select id="playerSelect" class="w-full select2 border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300">
+                    <select id="playerSelect" wire:model="idplayer" class="w-full select2 border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300">
                         <option value="">Selecciona un jugador</option>
                         @foreach($playersall as $player)
                         <option value="{{ $player->id }}">{{ $player->name_player }}</option>
                         @endforeach
                     </select>
+                    @error('idplayer')
+                    <small class="text-danger err-message">
+                        <i class="fa fa-info-circle"></i>&nbsp;{{ $message }}
+                    </small>
+                    @enderror
                 </div>
 
                 <div class="mb-4">
                     <label class="block text-gray-700">Horario</label>
-                    <select wire:model="horario" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300">
+                    <select wire:model="horario" wire:model="horario" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300">
                         <option value="">Selecciona un horario</option>
                         <option value="13:00">13:00 PM</option>
                         <option value="17:00">17:00 PM</option>
                     </select>
+                    @error('horario')
+                    <small class="text-danger err-message">
+                        <i class="fa fa-info-circle"></i>&nbsp;{{ $message }}
+                    </small>
+                    @enderror
                 </div>
                 <div class="flex justify-end">
                     <button type="button" wire:click="closeModal" class="bg-gray-500 text-white px-4 py-2 rounded-lg mr-2">

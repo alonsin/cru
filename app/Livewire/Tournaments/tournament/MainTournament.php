@@ -10,25 +10,29 @@ class MainTournament extends Component
 
     public $tournament, $idtournament;
     public $playersTournament = [];
+    public $grupos = [];
+    public $activeTab = 'jugadores';
 
     public function mount()
     {
         $this->idtournament = $this->tournament->id;
-        $this->playersTournament = TournamentPlayer::with([
-            'player',
-            'tournament',
-            'player.state',
-            'player.category',
-            'player.club'
-        ])
-            ->where('id_tournament', $this->tournament->id)
-            ->get();
+        $this->grupos = [];
     }
 
     public function showModalNewPlayerForTournament()
     {
-        // dd("lazaremos el modal aqui");
         $this->dispatch("setModalNewPlayerForTournmnt", $this->idtournament);
+    }
+
+    public function setDataTournament()
+    {
+        $this->activeTab = 'grupos';
+        $this->dispatch("setDataToGroups", $this->idtournament);
+    }
+
+    public function saveSorteo()
+    {
+        $this->dispatch('setSaveSorteo');
     }
 
     public function render()
