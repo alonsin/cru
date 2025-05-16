@@ -15,6 +15,10 @@ class TournamentPlayer extends Model
 		'id_tournament',
 		'id_player',
 		'horario',
+		'P1_TCAR',
+		'P1_TENT',
+		'P2_TCAR',
+		'P2_TENT',
 	];
 
 	public function tournament()

@@ -23,8 +23,6 @@
 		}
 
 		.tab-content {
-			border: 1px solid #dee2e6;
-			border-top: none;
 			background-color: #ffffff;
 			padding: 1.5rem;
 			border-radius: 0 0 0.5rem 0.5rem;
@@ -118,6 +116,16 @@
 				icon: 'success',
 				title: '¡Guardado!',
 				text: 'Los sorteos se han guardado correctamente.',
+				timer: 2000,
+				showConfirmButton: false
+			});
+		});
+
+		Livewire.on('grupos-guardados', () => {
+			Swal.fire({
+				icon: 'success',
+				title: '¡Guardado!',
+				text: 'La información de grupos de ha actualizado correctamente.',
 				timer: 2000,
 				showConfirmButton: false
 			});
