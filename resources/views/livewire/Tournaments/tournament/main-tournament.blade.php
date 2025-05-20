@@ -37,7 +37,7 @@
 		<h1 class="text-center font-semibold text-xl text-gray-600"> {{ strtoupper($tournament->name_tournament) }}</h1>
 		<h3 class="text-center font-semibold text-sm text-gray-600"> {{ \Carbon\Carbon::parse($tournament->fecha_torneo)->locale('es')->translatedFormat('d \d\e F \d\e Y') }}</h3>
 		<div class="card shadow-sm rounded-4 mt-5 border-0">
-			<div class="card-header bg-white border-bottom-0">
+			<div class="card-header bg-light border-bottom-0">
 				<ul class="nav nav-tabs nav-justified flex-column flex-sm-row" id="tournamentTabs" role="tablist">
 					<li class="nav-item" role="presentation">
 						<button class="nav-link @if($activeTab === 'jugadores') active @endif" id="jugadores-tab" data-bs-toggle="tab" data-bs-target="#jugadores" type="button" role="tab">👤 Jugadores</button>
@@ -47,6 +47,9 @@
 					</li>
 					<li class="nav-item" role="presentation">
 						<button class="nav-link" id="ajuste-tab" data-bs-toggle="tab" data-bs-target="#ajuste" type="button" role="tab">🎯 Subita</button>
+					</li>
+					<li class="nav-item" role="presentation">
+						<button class="nav-link" id="ajuste16-tab" data-bs-toggle="tab" data-bs-target="#ajuste16" type="button" role="tab">🎯 Ronda 16</button>
 					</li>
 					<!-- <li class="nav-item" role="presentation">
 						<button class="nav-link" id="ronda32-tab" data-bs-toggle="tab" data-bs-target="#ronda32" type="button" role="tab">🎯 Ronda 32</button>
@@ -83,9 +86,8 @@
 				<div class="tab-pane fade" id="ajuste" role="tabpanel">
 					<livewire:tournaments.tournament.tournament-players-subita />
 				</div>
-				<div class="tab-pane fade" id="ronda32" role="tabpanel">
-					<h5>Ronda de 32</h5>
-					<p>Visualiza y gestiona los partidos de la ronda de 32.</p>
+				<div class="tab-pane fade" id="ajuste16" role="tabpanel">
+					<h5>Ronda de 16</h5>
 				</div>
 				<div class="tab-pane fade" id="ronda16" role="tabpanel">
 					<h5>Ronda de 16</h5>

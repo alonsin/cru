@@ -6,8 +6,8 @@
 	</div>
 	@foreach ($grupos as $gIndex => $grupo)
 	<div class="card shadow-sm rounded mb-4 mt-3">
-		<div class="card-header bg-secondary text-white text-center fs-5 fw-bold">
-			GRUPO {{ $gIndex + 1 }}
+		<div style="background-color: #4b6584 ;" class="card-header text-white text-center fs-5 fw-bold">
+			GRUPO {{ $gIndex + 1 }}   ( 14:00 HRS )
 		</div>
 		<div class="card-body p-0">
 			<div class="table-responsive">
@@ -53,9 +53,9 @@
 
 								@if($isHighlighted)
 								{{-- Descansa en esta ronda: dos celdas naranjas sin input --}}
-								<td style="background-color: #c4c7cb ;">
+								<td style="background-color: #F4C29F ;">
 								</td>
-								<td style="background-color: #c4c7cb ;"></td>
+								<td style="background-color: #F4C29F ;"></td>
 								@else
 								{{-- Juega: asignamos este bloque al siguiente partido en BD --}}
 								@php
