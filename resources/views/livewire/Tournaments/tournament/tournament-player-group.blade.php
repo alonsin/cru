@@ -1,16 +1,15 @@
 <div>
-	<div class="d-flex justify-content-end mb-3">
-		<button type="button" wire:click="saveDataGrupos" class="btn btn-success px-4 py-2 fw-bold">
-			GUARDAR GRUPOS
+	<div class="text-center mt-3">
+		<button wire:click="saveDataGrupos" class="btn btn-success">
+			Guardar Grupos
 		</button>
 	</div>
 	@foreach ($grupos as $gIndex => $grupo)
-	<div class="card shadow-sm rounded mb-4">
+	<div class="card shadow-sm rounded mb-4 mt-3">
 		<div class="card-header bg-secondary text-white text-center fs-5 fw-bold">
 			GRUPO {{ $gIndex + 1 }}
 		</div>
 		<div class="card-body p-0">
-
 			<div class="table-responsive">
 				<table class="table table-bordered table-hover mb-0 text-center align-middle">
 					<thead class="table-light">
@@ -36,35 +35,56 @@
 						</tr>
 					</thead>
 					<tbody>
-						@foreach ($grupo as $jugadorId  => $jugador)
+						@foreach ($grupo as $jugadorId => $jugador)
+						@php
+						// contador de partidos jugados (0→p1, 1→p2)
+						$matchCounter = 0;
+						@endphp
 						<tr>
 							<td>{{ $loop->iteration }}</td>
 							<td style="white-space: nowrap;"><small>{{ $jugador['player_name'] }}</small></td>
 							<td style="white-space: nowrap;"><small>{{ $jugador['club'] }}</small></td>
 
-							@for ($i = 0; $i < 3; $i++) {{-- P1, P2, P3 (dos columnas por cada uno) --}}
-								@for ($k=0; $k < 2; $k++)
+							{{-- Recorremos rondas 0,1,2 (P1,P2,P3) --}}
+							@for ($i = 0; $i < 3; $i++)
 								@php
-								$isHighlighted=$jugadorId % 3==$i;
+								$isHighlighted=($jugadorId % 3)===$i;
 								@endphp
-								<td @if($isHighlighted) style="background-color: #FCBF66;" @endif>
-								@unless($isHighlighted)
-								<input
-									type="number"
-									wire:model.defer="grupo.{{ $jugador['id'] }}.p{{ $i + 1 }}.{{ $k }}"
-									class="form-control form-control-sm text-center"
-									style="padding: 0px 2px; font-size: 1rem; line-height: 1; height: 0.5em; font-weight: bold; border: none !important; box-shadow: none !important; outline: none;" />
 
-
-								@endunless
+								@if($isHighlighted)
+								{{-- Descansa en esta ronda: dos celdas naranjas sin input --}}
+								<td style="background-color: #c4c7cb ;">
 								</td>
-								@endfor
-								@endfor
+								<td style="background-color: #c4c7cb ;"></td>
+								@else
+								{{-- Juega: asignamos este bloque al siguiente partido en BD --}}
+								@php
+								$currentMatch = $matchCounter++; // 0 o 1
+								@endphp
+								@for($k = 0; $k < 2; $k++)
+									<td>
+									<input
+										type="number"
+										wire:model.defer="grupos.{{ $gIndex }}.{{ $jugadorId }}.p{{ $currentMatch + 1 }}.{{ $k }}"
+										class="form-control form-control-sm text-center"
+										style="padding:0 .25rem; font-size:1rem; line-height:1; height:1.5em; border:none; box-shadow:none; outline:none;" />
+									</td>
+									@endfor
+									@endif
 
-								<td>10</td>
-								<td>11</td>
-								<td>12</td>
-								<td>{{ $jugador->sorteo ?? '' }}</td>
+									@endfor
+
+									{{-- Totales y promedio --}}
+									<td>{{ $jugador['T_CAR'] }}</td>
+									<td>{{ $jugador['T_ENT'] }}</td>
+									<td><strong>{{ $jugador['PROM'] }}</strong></td>
+									<td>
+										<input
+											type="text"
+											wire:model.defer="grupos.{{ $gIndex }}.{{ $jugadorId }}.S_PASE_GRUPOS"
+											class="form-control form-control-sm text-center"
+											style="padding:0 .25rem; font-size:1rem; line-height:1; height:1.5em; border:none; box-shadow:none; outline:none;" />
+									</td>
 						</tr>
 						@endforeach
 					</tbody>

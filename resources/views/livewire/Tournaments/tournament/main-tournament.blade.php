@@ -51,9 +51,9 @@
 					<!-- <li class="nav-item" role="presentation">
 						<button class="nav-link" id="ronda32-tab" data-bs-toggle="tab" data-bs-target="#ronda32" type="button" role="tab">🎯 Ronda 32</button>
 					</li> -->
-					<li class="nav-item" role="presentation">
+					<!-- <li class="nav-item" role="presentation">
 						<button class="nav-link" id="ronda16-tab" data-bs-toggle="tab" data-bs-target="#ronda16" type="button" role="tab">🎯 Ronda 16</button>
-					</li>
+					</li> -->
 					<li class="nav-item" role="presentation">
 						<button class="nav-link" id="finales-tab" data-bs-toggle="tab" data-bs-target="#finales" type="button" role="tab">🏆 Finales</button>
 					</li>
@@ -81,8 +81,7 @@
 					<livewire:tournaments.tournament.tournament-players-group />					
 				</div>
 				<div class="tab-pane fade" id="ajuste" role="tabpanel">
-					<h5>Configuración</h5>
-					<p>Ajustes del torneo (nombre, reglas, sede, etc.).</p>
+					<livewire:tournaments.tournament.tournament-players-subita />
 				</div>
 				<div class="tab-pane fade" id="ronda32" role="tabpanel">
 					<h5>Ronda de 32</h5>

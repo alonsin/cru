@@ -19,58 +19,74 @@ class TournamentPlayersGroup extends Component
 
     public function saveDataGrupos()
     {
-
-        foreach ($this->grupo as $jugadorId => $partidas) {
-            $registro = TournamentPlayer::find($jugadorId);
-            if (!$registro) continue;
-
-            $partidasValidas = [];
-            // Recorremos p1, p2, p3 (pueden venir en cualquier orden)
-            foreach ($partidas as $key => $partida) {
-                // Saltar si no es un arreglo (por ejemplo si hay 'id' u otro campo)
-                if (!is_array($partida)) continue;
-
-                // Verificamos si tiene valores válidos
-                if (!empty($partida[0]) || !empty($partida[1])) {
-                    $partidasValidas[] = $partida;
+        // Recorremos cada chunk (grupo)…
+        foreach ($this->grupos as $chunk) {
+            // …y dentro cada jugador (que es un array con clave 'id', 'player_name', 'p1', 'p2', etc.)
+            foreach ($chunk as $jugadorData) {
+                // Usamos el ID real, no el offset del array
+                $registro = TournamentPlayer::find($jugadorData['id']);
+                if (! $registro) {
+                    continue;
                 }
-                // Solo necesitamos 2 partidas
-                if (count($partidasValidas) == 2) break;
+
+                // ---- P1 (primer partido que jugó) ----
+                // Si hay algún dato en p1[0] o p1[1], lo guardamos; si no, lo nulificamos
+                if (! empty($jugadorData['p1'][0]) || ! empty($jugadorData['p1'][1])) {
+                    $registro->P1_TCAR = $jugadorData['p1'][0];
+                    $registro->P1_TENT = $jugadorData['p1'][1];
+                } else {
+                    $registro->P1_TCAR = null;
+                    $registro->P1_TENT = null;
+                }
+
+                // ---- P2 (segundo partido que jugó) ----
+                if (! empty($jugadorData['p2'][0]) || ! empty($jugadorData['p2'][1])) {
+                    $registro->P2_TCAR = $jugadorData['p2'][0];
+                    $registro->P2_TENT = $jugadorData['p2'][1];
+                } else {
+                    $registro->P2_TCAR = null;
+                    $registro->P2_TENT = null;
+                }
+                $registro->SORTEO_PASE_GRUPOS = $jugadorData['S_PASE_GRUPOS'] ?: null;
+                // Guardamos el registro
+                $registro->save();
             }
-            // Asignamos a P1
-            if (isset($partidasValidas[0])) {
-                $registro->P1_TCAR = $partidasValidas[0][0] ?? null;
-                $registro->P1_TENT = $partidasValidas[0][1] ?? null;
-            }
-            // Asignamos a P2
-            if (isset($partidasValidas[1])) {
-                $registro->P2_TCAR = $partidasValidas[1][0] ?? null;
-                $registro->P2_TENT = $partidasValidas[1][1] ?? null;
-            }
-            $registro->save();
         }
 
-
+        // Disparamos el evento de “guardado”
         $this->dispatch('grupos-guardados');
+        $this->getDataAll();
+    }
+
+    public function getDataAll()
+    {
+        $this->grupos = TournamentPlayer::with('player')
+            ->orderBy('sorteo_principal')
+            ->get()
+            ->chunk(3)
+            ->map(function ($chunk) {
+                return $chunk->map(function ($item) {
+                    return [
+                        'id'       => $item->id,
+                        'player_name' => $item->player->name_player,
+                        'club'        => $item->player->club->name,
+                        'p1'       => [$item->P1_TCAR, $item->P1_TENT],
+                        'p2'       => [$item->P2_TCAR, $item->P2_TENT],
+                        'p3'       => [ /* … */],
+                        'T_CAR'    => (int)$item->T_CARAMBOLAS,
+                        'T_ENT'    => (int)$item->T_ENTRADAS,
+                        'PROM'     => $item->PROM,
+                        'S_PASE_GRUPOS'     => $item->SORTEO_PASE_GRUPOS,
+                    ];
+                })->toArray();
+            })
+            ->toArray();
     }
 
     public function setDataToGroups($idtournament)
     {
         $this->idtournament = $idtournament;
-        $this->grupos = TournamentPlayer::with('player')
-            ->orderBy('sorteo_principal')
-            ->get()
-            ->chunk(3)
-            ->map(function ($grupo) {
-                return $grupo->map(function ($item) {
-                    return [
-                        'id' => $item->id,
-                        'player_name' => $item->player->name_player,
-                        'club' => $item->player->club->name,
-                        // Agrega más campos si necesitas
-                    ];
-                });
-            })->toArray();
+        $this->getDataAll();
     }
 
     public function render()

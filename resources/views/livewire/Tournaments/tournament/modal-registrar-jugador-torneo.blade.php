@@ -22,7 +22,7 @@
                     <label class="block text-gray-700">Horario</label>
                     <select wire:model="horario" wire:model="horario" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300">
                         <option value="">Selecciona un horario</option>
-                        <option value="13:00">13:00 PM</option>
+                        <option value="13:00">14:00 PM</option>
                         <option value="17:00">17:00 PM</option>
                     </select>
                     @error('horario')
