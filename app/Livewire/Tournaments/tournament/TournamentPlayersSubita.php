@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 class TournamentPlayersSubita extends Component
 {
 
-    public $tournament, $idtournament;
+    public $tournament, $idtournament, $id_tournament;
     public $playersTournament = [];
     public $enfrentamientos = [];
     public $enfrentamientos1 = [];
@@ -48,11 +48,17 @@ class TournamentPlayersSubita extends Component
             ['B2', 'A2'],
         ];
 
-        $this->ajustesSeleccionados = TournamentPlayer::where('id_tournament', $this->idtournament)
+
+        $this->ajustesSeleccionados = TournamentPlayer::where('id_tournament', $this->id_tournament)
             ->pluck('R_SUBITA', 'id')
             ->map(function ($valor) {
                 return $valor == 1;
             })->toArray();
+
+        $this->sorteossubita = TournamentPlayer::where('id_tournament', $this->id_tournament)
+            ->pluck('SORTEO_SUBITA', 'id')
+            ->toArray();
+
 
 
 
@@ -103,6 +109,7 @@ class TournamentPlayersSubita extends Component
                 $registro = TournamentPlayer::find($jugadorId);
                 if ($registro) {
                     $registro->SORTEO_SUBITA = $valorSorteo ? $valorSorteo : 0;
+                    $registro->SORTEO_SUBITA <= 10 ? $registro->SORTEO_TO_16 = $valorSorteo : $registro->SORTEO_TO_16 = null; 
                     $registro->save();
                 }
             }

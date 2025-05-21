@@ -66,7 +66,7 @@
 				<div class="tab-pane fade @if($activeTab === 'jugadores') show active @endif" id="jugadores" role="tabpanel">
 					<div class="d-flex justify-content-center align-items-center mt-1 mb-3">
 						<button wire:click="showModalNewPlayerForTournament()" class="btn btn-success btn-sm">
-							<i class="bi bi-plus-circle me-1"></i> Agregar Jugador
+							<i class="bi bi-plus-circle me-1"></i> Agregar Jugador {{$idtournament}}
 						</button>
 
 						<button wire:click="saveSorteo()" class="btn btn-secondary btn-sm ms-2">
@@ -84,10 +84,10 @@
 					<livewire:tournaments.tournament.tournament-players-group />					
 				</div>
 				<div class="tab-pane fade" id="ajuste" role="tabpanel">
-					<livewire:tournaments.tournament.tournament-players-subita />
+					<livewire:tournaments.tournament.tournament-players-subita  id_tournament="{{$idtournament}}"/>
 				</div>
 				<div class="tab-pane fade" id="ajuste16" role="tabpanel">
-					<h5>Ronda de 16</h5>
+					<livewire:tournaments.tournament.tournament-players-ajuste16  id_tournament="{{$idtournament}}"/>
 				</div>
 				<div class="tab-pane fade" id="ronda16" role="tabpanel">
 					<h5>Ronda de 16</h5>
