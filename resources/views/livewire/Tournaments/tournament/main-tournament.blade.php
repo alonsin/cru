@@ -94,8 +94,7 @@
 					<p>Visualiza y gestiona los partidos de la ronda de 16.</p>
 				</div>
 				<div class="tab-pane fade" id="finales" role="tabpanel">
-					<h5>Finales</h5>
-					<p>Semifinales y Final del torneo.</p>
+					<livewire:tournaments.tournament.tournament-players-finals  id_tournament="{{$idtournament}}"/>
 				</div>
 			</div>
 		</div>
