@@ -26,26 +26,33 @@
 								</tr>
 							</thead>
 							<tbody>
-								@foreach ($enfrentamientosajustes as $index => [$clave1, $clave2])
+								@foreach ($enfrentamientos8 as $index => [$clave1, $clave2])
 								@php
-								$jugador1 = $jugadores[$clave1] ?? null;
-								$jugador2 = $jugadores[$clave2] ?? null;
+								$jugador1 = $jugadores8[$clave1] ?? null;
+								$jugador2 = $jugadores8[$clave2] ?? null;
+								$ambosPresentes = $jugador1 && $jugador2;
 								@endphp
 								<tr>
 									<td>{{ $clave1 }}</td>
 									<td><strong>{{ $jugador1['nombre'] ?? '---' }}</strong></td>
 									<td>
-										<input type="checkbox"
-											wire:model="ajustesSeleccionados.{{ $jugador1['id'] ?? 'x' }}"
+										<input type="radio"
+											name="ganador_{{ $index }}"
+											value="{{ $jugador1['id'] ?? '' }}"
+											wire:model="ganadores8.{{ $index }}"
 											class="form-check-input"
-											aria-label="Ganador {{ $jugador1['nombre'] ?? $clave1 }}">
+											aria-label="Ganador {{ $jugador1['nombre'] ?? $clave1 }}"
+											{{ !$ambosPresentes ? 'disabled' : '' }}>
 									</td>
 									<td>VS</td>
 									<td>
-										<input type="checkbox"
-											wire:model="ajustesSeleccionados.{{ $jugador2['id'] ?? 'x' }}"
+										<input type="radio"
+											name="ganador_{{ $index }}"
+											value="{{ $jugador2['id'] ?? '' }}"
+											wire:model="ganadores8.{{ $index }}"
 											class="form-check-input"
-											aria-label="Ganador {{ $jugador2['nombre'] ?? $clave2 }}">
+											aria-label="Ganador {{ $jugador2['nombre'] ?? $clave2 }}"
+											{{ !$ambosPresentes ? 'disabled' : '' }}>
 									</td>
 									<td><strong>{{ $jugador2['nombre'] ?? '---' }}</strong></td>
 									<td>{{ $clave2 }}</td>
@@ -77,26 +84,33 @@
 								</tr>
 							</thead>
 							<tbody>
-								@foreach ($enfrentamientos16 as $index => [$clave1, $clave2])
+								@foreach ($enfrentamientos4 as $index => [$clave1, $clave2])
 								@php
-								$jugador1 = $jugadores16[$clave1] ?? null;
-								$jugador2 = $jugadores16[$clave2] ?? null;
+								$jugador1 = $jugadores4[$clave1] ?? null;
+								$jugador2 = $jugadores4[$clave2] ?? null;
+								$ambosPresentes = $jugador1 && $jugador2;
 								@endphp
 								<tr>
 									<td>{{ $clave1 }}</td>
 									<td><strong>{{ $jugador1['nombre'] ?? '---' }}</strong></td>
 									<td>
-										<input type="checkbox"
-											wire:model="ajustesSeleccionados16.{{ $jugador1['id'] ?? 'x' }}"
+										<input type="radio"
+											name="ganador_{{ $index }}"
+											value="{{ $jugador1['id'] ?? '' }}"
+											wire:model="ganadores4.{{ $index }}"
 											class="form-check-input"
-											aria-label="Ganador {{ $jugador1['nombre'] ?? $clave1 }}">
+											aria-label="Ganador {{ $jugador1['nombre'] ?? $clave1 }}"
+											{{ !$ambosPresentes ? 'disabled' : '' }}>
 									</td>
 									<td>VS</td>
 									<td>
-										<input type="checkbox"
-											wire:model="ajustesSeleccionados16.{{ $jugador2['id'] ?? 'x' }}"
+										<input type="radio"
+											name="ganador_{{ $index }}"
+											value="{{ $jugador2['id'] ?? '' }}"
+											wire:model="ganadores8.{{ $index }}"
 											class="form-check-input"
-											aria-label="Ganador {{ $jugador2['nombre'] ?? $clave2 }}">
+											aria-label="Ganador {{ $jugador2['nombre'] ?? $clave2 }}"
+											{{ !$ambosPresentes ? 'disabled' : '' }}>
 									</td>
 									<td><strong>{{ $jugador2['nombre'] ?? '---' }}</strong></td>
 									<td>{{ $clave2 }}</td>
@@ -132,26 +146,28 @@
 								</tr>
 							</thead>
 							<tbody>
-								@foreach ($enfrentamientofinal as $index => [$clave1, $clave2])
+								@foreach ($enfrentamientos2 as $index => [$clave1, $clave2])
 								@php
-								$jugador1 = $jugadores16[$clave1] ?? null;
-								$jugador2 = $jugadores16[$clave2] ?? null;
+								$jugador1 = $jugadores2[$clave1] ?? null;
+								$jugador2 = $jugadores2[$clave2] ?? null;
 								@endphp
 								<tr>
 									<td>{{ $clave1 }}</td>
 									<td><strong>{{ $jugador1['nombre'] ?? '---' }}</strong></td>
 									<td>
 										<input type="checkbox"
-											wire:model="ajustesSeleccionados16.{{ $jugador1['id'] ?? 'x' }}"
+											wire:model="ajustesSeleccionados2.{{ $jugador1['id'] ?? 'x' }}"
 											class="form-check-input"
-											aria-label="Ganador {{ $jugador1['nombre'] ?? $clave1 }}">
+											aria-label="Ganador {{ $jugador1['nombre'] ?? $clave1 }}"
+											@if(is_null($jugador1)) disabled @endif>
 									</td>
 									<td>VS</td>
 									<td>
 										<input type="checkbox"
-											wire:model="ajustesSeleccionados16.{{ $jugador2['id'] ?? 'x' }}"
+											wire:model="ajustesSeleccionados2.{{ $jugador2['id'] ?? 'x' }}"
 											class="form-check-input"
-											aria-label="Ganador {{ $jugador2['nombre'] ?? $clave2 }}">
+											aria-label="Ganador {{ $jugador2['nombre'] ?? $clave2 }}"
+											@if(is_null($jugador2)) disabled @endif>
 									</td>
 									<td><strong>{{ $jugador2['nombre'] ?? '---' }}</strong></td>
 									<td>{{ $clave2 }}</td>
