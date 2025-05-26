@@ -19,6 +19,8 @@ class TournamentPlayer extends Model
 		'P1_TENT',
 		'P2_TCAR',
 		'P2_TENT',
+		'R_8',
+		'NUM_4',
 	];
 
 	public function tournament()
