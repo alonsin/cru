@@ -5,11 +5,10 @@ namespace App\Livewire\Tournaments\tournament;
 use App\Models\Game;
 use App\Models\TournamentPlayer;
 use Livewire\Component;
-use Illuminate\Support\Arr;
+use Livewire\Attributes\On;
 
 class TournamentPlayersAjuste16 extends Component
 {
-
     public $id_tournament;
     public $enfrentamientos = [];
     public $enfrentamientosajustes = [];
@@ -22,8 +21,42 @@ class TournamentPlayersAjuste16 extends Component
     public $mesaActual = [];
     public $juegosGuardadosAjuste16 = [];
     public $estatusSeleccionados = [];
+    public $mesaSeleccionada = [];
+    public $mesasDisponibles = [];
+    public $mesasOcupadas = [];
 
-    public function mount()
+
+    public function mount() {
+        $this->loadandupdateData16();
+    }
+
+    public function loadandupdateData16()
+    {
+        $this->loadData16AjusteMain();
+        $this->cargarJuegosGuardados();
+        $this->cargarganadoresactuales();
+        $this->cargarMesasDisponibles();
+    }
+
+    #[On('updateGamesRonda16')]
+    public function actualizarJuegos()
+    {
+        $this->guardarAjustes16();
+        $this->loadandupdateData16();
+    }
+
+    public function cargarMesasDisponibles()
+    {
+        $this->mesasOcupadas = Game::where('id_tournament', $this->id_tournament)
+            ->where('estatus', 1)
+            ->pluck('mesa')
+            ->filter() // evitar valores nulos
+            ->unique()
+            ->toArray();
+        $this->mesasDisponibles = array_diff(range(1, 11), $this->mesasOcupadas);
+    }
+
+    public function loadData16AjusteMain()
     {
         $this->enfrentamientosajustes = [
             ['11', '22'],
@@ -52,17 +85,10 @@ class TournamentPlayersAjuste16 extends Component
                 'SORTEO_SUBITA' => $jp->SORTEO_SUBITA,
             ];
         })->keyBy('SORTEO_SUBITA')->all();
-
-        $this->cargarJuegosGuardados();
-
-
-
-        $this->cargarganadoresactuales();
     }
 
     public function seleccionarGanador($ganadorId, $perdedorId)
     {
-        // Asegurarse de que solo uno esté seleccionado
         $this->ajustesSeleccionados[$ganadorId] = true;
         unset($this->ajustesSeleccionados[$perdedorId]);
     }
@@ -88,12 +114,10 @@ class TournamentPlayersAjuste16 extends Component
                 $claveJuego = $clave1 . '-' . $clave2;
                 $this->juegosGuardadosAjuste16[$claveJuego] = $juego;
 
-                // Cargar el estatus en el array para usarlo en el select
                 $this->estatusSeleccionados[$juego->id] = $juego->estatus;
+                $this->mesaSeleccionada[$juego->id] = $juego->mesa;
             }
         }
-
-        // dd($this->juegosGuardadosAjuste16);
     }
 
     public function cargarganadoresactuales()
@@ -101,12 +125,9 @@ class TournamentPlayersAjuste16 extends Component
         $this->ajustesSeleccionados = [];
 
         foreach ($this->enfrentamientosajustes as [$clave1, $clave2]) {
-
-            // Verifica que ambos jugadores existan antes de continuar
             if (!isset($this->jugadores[$clave1]) || !isset($this->jugadores[$clave2])) {
                 continue; // Saltar este enfrentamiento si falta uno de los dos jugadores
             }
-
             $jugador1 = $this->jugadores[$clave1];
             $jugador2 = $this->jugadores[$clave2];
 
@@ -129,6 +150,12 @@ class TournamentPlayersAjuste16 extends Component
 
     public function guardarAjustes()
     {
+        $this->guardarAjustes16();
+        $this->dispatch('general-guardado');
+    }
+
+    public function guardarAjustes16()
+    {
         foreach ($this->enfrentamientosajustes as $index => $par) {
             [$clave1, $clave2] = $par;
 
@@ -136,7 +163,13 @@ class TournamentPlayersAjuste16 extends Component
                 $jugador1 = $this->jugadores[$clave1];
                 $jugador2 = $this->jugadores[$clave2];
 
-                $mesa = 10;
+                $juego = Game::where('id_tournament', $this->id_tournament)
+                    ->where('ronda', 3)
+                    ->where('p1', $jugador1['id_player'])
+                    ->where('p2', $jugador2['id_player'])
+                    ->first();
+
+                $mesa = $juego ? ($this->mesaSeleccionada[$juego->id] ?? $juego->mesa) : ($this->mesaSeleccionada[$index] ?? null);
 
                 $ganador1 = !empty($this->ajustesSeleccionados[$jugador1['id_player']]);
                 $ganador2 = !empty($this->ajustesSeleccionados[$jugador2['id_player']]);
@@ -144,17 +177,12 @@ class TournamentPlayersAjuste16 extends Component
                 $wp1 = $ganador1 ? 1 : 0;
                 $wp2 = $ganador2 ? 1 : 0;
 
-                $juego = Game::where('id_tournament', $this->id_tournament)
-                    ->where('ronda', 3)
-                    ->where('p1', $jugador1['id_player'])
-                    ->where('p2', $jugador2['id_player'])
-                    ->first();
-
                 if ($juego) {
                     $juego->update([
                         'wp1' => $wp1,
                         'wp2' => $wp2,
-                        'estatus' => 3,
+                        'estatus' => $this->estatusSeleccionados[$juego->id] ?? 0,
+                        'mesa' => $mesa,
                     ]);
                 } else {
                     Game::create([
@@ -167,15 +195,33 @@ class TournamentPlayersAjuste16 extends Component
                         'wp2' => $wp2,
                         'CP2' => $clave2,
                         'ronda' => 3,
-                        'estatus' => 3,
+                        'estatus' => $this->estatusSeleccionados[$index] ?? 0, // si no hay juego, usa el índice
                     ]);
+                }
+
+                // Actualizar ganador y perdedor en TournamentPlayer
+                if ($ganador1) {
+                    TournamentPlayer::where('id_tournament', $this->id_tournament)
+                        ->where('id_player', $jugador1['id_player'])
+                        ->update(['SORTEO_TO_16' => $clave1]);
+
+                    TournamentPlayer::where('id_tournament', $this->id_tournament)
+                        ->where('id_player', $jugador2['id_player'])
+                        ->update(['SORTEO_TO_16' => null]);
+                }
+
+                if ($ganador2) {
+                    TournamentPlayer::where('id_tournament', $this->id_tournament)
+                        ->where('id_player', $jugador2['id_player'])
+                        ->update(['SORTEO_TO_16' => $clave1]);
+
+                    TournamentPlayer::where('id_tournament', $this->id_tournament)
+                        ->where('id_player', $jugador1['id_player'])
+                        ->update(['SORTEO_TO_16' => null]);
                 }
             }
         }
-
-        $this->dispatch('grupos-guardados');
     }
-
 
     public function render()
     {

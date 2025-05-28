@@ -115,6 +115,7 @@ class TournamentPlayersSubita extends Component
             }
         }
 
+        $this->dispatch('updateGamesRonda16');
         $this->dispatch('grupos-guardados');
     }
 

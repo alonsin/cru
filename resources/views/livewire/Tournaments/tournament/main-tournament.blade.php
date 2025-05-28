@@ -130,6 +130,16 @@
 				showConfirmButton: false
 			});
 		});
+
+		Livewire.on('general-guardado', () => {
+			Swal.fire({
+				icon: 'success',
+				title: '¡Guardado!',
+				text: 'La información se ha actualizado correctamente.',
+				timer: 2000,
+				showConfirmButton: false
+			});
+		});
 	</script>
 	@endscript
 

@@ -6,7 +6,7 @@
 	</div>
 	<div class="row g-4 mt-1">
 		<!-- Tabla SUBITA 14:00 HRS -->
-		<div class="col-md-6">
+		<div class="col-md-12">
 			<div class="card shadow-sm mb-4 h-100">
 				<div style="background-color: #4b6584 ;" class="card-header text-white text-center fw-bold">
 					RONDA DE AJUSTE A 16
@@ -40,27 +40,39 @@
 								$esGanador2 = $juego && $juego['wp2'] == 1;
 								@endphp
 
-								<tr @php echo ($juego && $juego['estatus']==1) ? 'class="table-warning"' : '' ; @endphp>
+								<tr
+									@php
+									if ($juego) {
+									if ($juego['estatus']==1) {
+									echo 'class="table-warning"' ;
+									} elseif ($juego['estatus']==2) {
+									echo 'class="table-success"' ;
+									}
+									}
+									@endphp>
+
 									{{-- Estado --}}
-									<td>
+									<td class="text-center align-middle">
 										@if ($juego)
 										@php
 										$estatus = $estatusSeleccionados[$juego['id']] ?? $juego['estatus'];
 										$claseColor = match((int) $estatus) {
-										1 => 'bg-success text-white', // En Juego
-										2 => 'bg-danger text-white', // Finalizado
-										3 => 'bg-secondary text-white', // Pendiente
-										default => 'bg-secondary text-white', // Por si acaso
+										1 => 'bg-success text-white',
+										2 => 'bg-danger text-white',
+										3 => 'bg-secondary text-white',
+										default => 'bg-secondary text-white',
 										};
 										@endphp
 
-										<select wire:model="estatusSeleccionados.{{ $juego['id'] }}"
-											class="form-select form-select-sm {{ $claseColor }}"
-											style="padding: 0.2rem 0.4rem; font-size: 0.7rem; height: auto; line-height: 1; border-radius: 0.375rem; width: fit-content; min-width: 100px;">
-											<option value="0">PENDIENTE</option>
-											<option value="1">EN JUEGO</option>
-											<option value="2">FINALIZADO</option>
-										</select>
+										<div class="d-flex justify-content-center">
+											<select wire:model="estatusSeleccionados.{{ $juego['id'] }}"
+												class="form-select form-select-sm {{ $claseColor }}"
+												style="padding: 0.2rem 0.4rem; font-size: 0.7rem; height: auto; line-height: 1; border-radius: 0.375rem; width: fit-content; min-width: 100px;">
+												<option value="0">PENDIENTE</option>
+												<option value="1">EN JUEGO</option>
+												<option value="2">FINALIZADO</option>
+											</select>
+										</div>
 										@else
 										<span class="badge bg-secondary">Pendiente</span>
 										@endif
@@ -68,7 +80,7 @@
 
 
 									{{-- Clave jugador 1 --}}
-									<td>{{ $clave1 }}</td>
+									<td><strong>{{ $clave1 }}</strong></td>
 									<td>{{ $jugador1['nombre'] ?? '---' }}</td>
 									{{-- Checkbox jugador 1 --}}
 									{{-- Checkbox jugador 1 o -- --}}
@@ -101,23 +113,40 @@
 									@endif
 
 									<td>{{ $jugador2['nombre'] ?? '---' }}</td>
-									<td>{{ $clave2 }}</td>
+									<td><strong>{{ $clave2 }}</strong></td>
+
 
 									{{-- Mesa --}}
-									<td>
+									<td class="text-center align-middle">
 										@if ($juego)
-										<select wire:model="mesaSeleccionada.{{ $juego['id'] }}"
-											class="form-select form-select-sm bg-primary text-white"
-											style="padding: 0.2rem 0.4rem; font-size: 0.7rem; height: auto; line-height: 1; border-radius: 0.375rem; width: fit-content; min-width: 100px;">
-											<option value="">Selecciona mesa</option>
-											@for ($i = 1; $i <= 11; $i++)
-												<option value="{{ $i }}">MESA {{ $i }}</option>
-												@endfor
-										</select>
+										<div class="d-flex justify-content-center">
+											@php
+											$mesaActual = $mesaSeleccionada[$juego['id']] ?? $juego['mesa'];
+											$opcionesMesa = $mesasDisponibles;
+
+											// Si la mesa actual está ocupada pero es la de este juego, permitir mostrarla
+											if ($mesaActual && !in_array($mesaActual, $opcionesMesa)) {
+											$opcionesMesa[] = $mesaActual;
+											}
+
+											sort($opcionesMesa);
+											@endphp
+
+											<select wire:model="mesaSeleccionada.{{ $juego['id'] }}"
+												class="form-select form-select-sm bg-warning text-dark"
+												style="padding: 0.2rem 0.4rem; font-size: 0.7rem; height: auto; line-height: 1; border-radius: 0.375rem; width: fit-content; min-width: 100px;">
+												<option value="">Selecciona mesa</option>
+												@foreach ($opcionesMesa as $mesa)
+												<option value="{{ $mesa }}">MESA {{ $mesa }}</option>
+												@endforeach
+											</select>
+										</div>
 										@else
 										<span class="text-muted">---</span>
 										@endif
 									</td>
+
+
 								</tr>
 								@endforeach
 
@@ -128,9 +157,13 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-md-6">
+
+	</div>
+
+	<div class="row mt-4">
+		<div class="col-md-12">
 			<div class="card shadow-sm mb-4 h-100">
-				<div style="background-color: #89a0bc ;" class="card-header text-white text-center fw-bold">
+				<div style="background-color: #4b6584 ;" class="card-header text-white text-center fw-bold">
 					RONDA DE 16
 				</div>
 				<div class="card-body p-0">
