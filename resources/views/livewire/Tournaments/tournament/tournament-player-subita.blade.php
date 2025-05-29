@@ -36,7 +36,7 @@
 								$jugador2 = $jugadores1[$clave2] ?? null;
 
 								$claveJuego = $clave1 . '-' . $clave2;
-								$juego = $juegosGuardadosAjuste16[$claveJuego] ?? null;
+								$juego = $juegosGuardadosSubita1[$claveJuego] ?? null;
 
 								$esGanador1 = $juego && $juego['wp1'] == 1;
 								$esGanador2 = $juego && $juego['wp2'] == 1;
@@ -46,7 +46,7 @@
 									<td class="text-center align-middle">
 										@if ($juego)
 										@php
-										$estatus = $estatusSeleccionados[$juego['id']] ?? $juego['estatus'];
+										$estatus = $estatusSeleccionados1[$juego['id']] ?? $juego['estatus'];
 										$claseColor = match((int) $estatus) {
 										1 => 'bg-success text-white',
 										2 => 'bg-danger text-white',
@@ -55,7 +55,7 @@
 										};
 										@endphp
 										<div class="d-flex justify-content-center">
-											<select wire:model="estatusSeleccionados.{{ $juego['id'] }}"
+											<select wire:model="estatusSeleccionados1.{{ $juego['id'] }}"
 												class="form-select form-select-sm {{ $claseColor }}"
 												style="padding: 0.2rem 0.4rem; font-size: 0.7rem; height: auto; line-height: 1; border-radius: 0.375rem; width: fit-content; min-width: 100px;">
 												<option value="0">PENDIENTE</option>
