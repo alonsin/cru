@@ -52,7 +52,7 @@ class TournamentPlayersSubita extends Component
 
     public function loadDataSubita1AjusteMain()
     {
-        $this->enfrentamientos = [
+        $this->enfrentamientos1 = [
             ['A1', 'B1'],
             ['C1', 'D1'],
             ['E1', 'F1'],
@@ -71,10 +71,8 @@ class TournamentPlayersSubita extends Component
         $jugadoresCollection1  = TournamentPlayer::with('player')
             ->where('id_tournament', $this->id_tournament)
             ->where('horario', '14:00')
-            ->whereIn('SORTEO_PASE_GRUPOS', Arr::flatten($this->enfrentamientos))
+            ->whereIn('SORTEO_PASE_GRUPOS', Arr::flatten($this->enfrentamientos1))
             ->get();
-
-            // dd($jugadoresCollection1);
 
         $this->jugadores1 = $jugadoresCollection1->map(function ($jp) {
             return [
@@ -84,11 +82,12 @@ class TournamentPlayersSubita extends Component
                 'SORTEO_PASE_GRUPOS' => $jp->SORTEO_PASE_GRUPOS,
             ];
         })->keyBy('SORTEO_PASE_GRUPOS')->all();
+
     }
 
     public function cargarJuegosGuardados1()
     {
-        foreach ($this->enfrentamientos as [$clave1, $clave2]) {
+        foreach ($this->enfrentamientos1 as [$clave1, $clave2]) {
 
             if (!isset($this->jugadores1[$clave1]) || !isset($this->jugadores1[$clave2])) {
                 continue;
@@ -111,6 +110,7 @@ class TournamentPlayersSubita extends Component
                 $this->mesaSeleccionada[$juego->id] = $juego->mesa;
             }
         }
+
     }
 
     public function cargarganadoresactuales1()
@@ -118,18 +118,20 @@ class TournamentPlayersSubita extends Component
         $this->subitasSeleccionados1 = [];
 
         foreach ($this->enfrentamientos1 as [$clave1, $clave2]) {
-            if (!isset($this->jugadores[$clave1]) || !isset($this->jugadores[$clave2])) {
+
+            if (!isset($this->jugadores1[$clave1]) || !isset($this->jugadores1[$clave2])) {
                 continue; // Saltar este enfrentamiento si falta uno de los dos jugadores
             }
-            $jugador1 = $this->jugadores[$clave1];
-            $jugador2 = $this->jugadores[$clave2];
+
+            $jugador1 = $this->jugadores1[$clave1];
+            $jugador2 = $this->jugadores1[$clave2];
 
             $juego = Game::where('id_tournament', $this->id_tournament)
-                ->where('ronda', 3)
+                ->where('ronda', 2)
                 ->where('p1', $jugador1['id_player'])
                 ->where('p2', $jugador2['id_player'])
                 ->first();
-
+                
             if ($juego) {
                 if ($juego->wp1 == 1) {
                     $this->subitasSeleccionados1[$jugador1['id_player']] = true;
@@ -150,12 +152,14 @@ class TournamentPlayersSubita extends Component
 
     public function guardarAjustesSubita1()
     {
-        foreach ($this->enfrentamientos as $index => $par) {
+        foreach ($this->enfrentamientos1 as $index => $par) {
             [$clave1, $clave2] = $par;
 
             if (isset($this->jugadores1[$clave1]) && isset($this->jugadores1[$clave2])) {
                 $jugador1 = $this->jugadores1[$clave1];
                 $jugador2 = $this->jugadores1[$clave2];
+
+
 
                 $juego = Game::where('id_tournament', $this->id_tournament)
                     ->where('ronda', 2)
@@ -165,9 +169,9 @@ class TournamentPlayersSubita extends Component
 
                 $mesa = $juego ? ($this->mesaSeleccionada[$juego->id] ?? $juego->mesa) : ($this->mesaSeleccionada[$index] ?? null);
 
-                $ganador1 = !empty($this->ajustesSeleccionados[$jugador1['id_player']]);
-                $ganador2 = !empty($this->ajustesSeleccionados[$jugador2['id_player']]);
-
+                $ganador1 = !empty($this->subitasSeleccionados1[$jugador1['id_player']]);
+                $ganador2 = !empty($this->subitasSeleccionados1[$jugador2['id_player']]);
+                
                 $wp1 = $ganador1 ? 1 : 0;
                 $wp2 = $ganador2 ? 1 : 0;
 

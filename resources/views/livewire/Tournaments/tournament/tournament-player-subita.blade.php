@@ -30,13 +30,14 @@
 								</tr>
 							</thead>
 							<tbody>
-								@foreach ($enfrentamientos as $index => [$clave1, $clave2])
+								@foreach ($enfrentamientos1 as $index => [$clave1, $clave2])
 								@php
 								$jugador1 = $jugadores1[$clave1] ?? null;
 								$jugador2 = $jugadores1[$clave2] ?? null;
 
 								$claveJuego = $clave1 . '-' . $clave2;
 								$juego = $juegosGuardadosSubita1[$claveJuego] ?? null;
+
 
 								$esGanador1 = $juego && $juego['wp1'] == 1;
 								$esGanador2 = $juego && $juego['wp2'] == 1;
@@ -78,14 +79,14 @@
 									<td><strong>{{ $jugador1['nombre'] ?? '---' }}</strong></td>
 									<td>
 										<input type="checkbox"
-											wire:model="ajustesSeleccionados.{{ $jugador1['id'] ?? 'x' }}"
+											wire:model="subitasSeleccionados1.{{ $jugador1['id_player'] ?? 'x' }}"
 											class="form-check-input"
 											aria-label="Ganador {{ $jugador1['nombre'] ?? $clave1 }}">
 									</td>
 									<td>VS</td>
 									<td>
 										<input type="checkbox"
-											wire:model="ajustesSeleccionados.{{ $jugador2['id'] ?? 'x' }}"
+											wire:model="subitasSeleccionados1.{{ $jugador2['id_player'] ?? 'x' }}"
 											class="form-check-input"
 											aria-label="Ganador {{ $jugador2['nombre'] ?? $clave2 }}">
 									</td>
@@ -98,9 +99,16 @@
 									{{-- Mesa --}}
 									<td class="text-center align-middle">
 										@if ($juego)
+										@php
+										$estatus = $estatusSeleccionados1[$juego['id']] ?? $juego['estatus'];
+										$mesaActual = $mesaSeleccionada[$juego['id']] ?? $juego['mesa'];
+										@endphp
+
+										@if ((int) $estatus === 2)
+										<strong>{{ $mesaActual }}</strong>
+										@else
 										<div class="d-flex justify-content-center">
 											@php
-											$mesaActual = $mesaSeleccionada[$juego['id']] ?? $juego['mesa'];
 											$opcionesMesa = $mesasDisponibles;
 
 											// Si la mesa actual está ocupada pero es la de este juego, permitir mostrarla
@@ -120,6 +128,7 @@
 												@endforeach
 											</select>
 										</div>
+										@endif
 										@else
 										<span class="text-muted">---</span>
 										@endif
