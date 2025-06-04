@@ -151,6 +151,7 @@ class TournamentPlayersAjuste16 extends Component
     public function guardarAjustes()
     {
         $this->guardarAjustes16();
+        $this->loadandupdateData16();
         $this->dispatch('general-guardado');
     }
 
