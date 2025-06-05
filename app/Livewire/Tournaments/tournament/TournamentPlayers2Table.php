@@ -8,7 +8,7 @@ use App\Models\Player;
 use App\Models\TournamentPlayer;
 use Illuminate\Database\Eloquent\Builder;
 
-class TournamentPlayersTable extends DataTableComponent
+class TournamentPlayers2Table extends DataTableComponent
 {
     protected $listeners = ['refreshTablePlayersTournament' => 'refreshtable', 'setSaveSorteo'];
     protected $model = Player::class;
@@ -28,14 +28,14 @@ class TournamentPlayersTable extends DataTableComponent
                 'player',
                 'tournament',
             ])
-            ->where('horario', '14:00'); // Filtro por horario
+            ->where('horario', '17:00'); // Filtro por horario
 
         return $query;
     }
 
     public function mount()
     {
-        $this->inputs = TournamentPlayer::where('horario', '14:00')
+        $this->inputs = TournamentPlayer::where('horario', '17:00')
             ->pluck('sorteo_principal', 'id')
             ->toArray();
     }

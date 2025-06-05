@@ -19,8 +19,14 @@ class MainTournament extends Component
         $this->grupos = [];
     }
 
+    public function setActiveTab($tab)
+    {
+        $this->activeTab = $tab;
+    }
+
     public function showModalNewPlayerForTournament()
     {
+        // dd($this->activeTab);
         $this->dispatch("setModalNewPlayerForTournmnt", $this->idtournament);
     }
 

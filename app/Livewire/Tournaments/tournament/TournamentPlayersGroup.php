@@ -11,6 +11,7 @@ class TournamentPlayersGroup extends Component
     public $tournament, $idtournament;
     public $playersTournament = [];
     public $grupos = [];
+    public $grupos2 = [];
     public $grupo = [];
 
     protected $listeners = [
@@ -62,6 +63,34 @@ class TournamentPlayersGroup extends Component
     {
         $this->grupos = TournamentPlayer::with(['player.club'])
             ->whereNotNull('sorteo_principal') // Solo jugadores con sorteo definido
+            ->where('horario', '14:00')        // Filtro por horario 14:00
+            ->orderBy('sorteo_principal', 'asc') // Orden ascendente por sorteo
+            ->get()
+            ->chunk(3) // Agrupar cada 3 jugadores
+            ->map(function ($chunk) {
+                return $chunk->map(function ($item) {
+                    return [
+                        'id'          => $item->id,
+                        'player_name' => $item->player->name_player,
+                        'club'        => $item->player->club->name,
+                        'p1'          => [$item->P1_TCAR, $item->P1_TENT],
+                        'p2'          => [$item->P2_TCAR, $item->P2_TENT],
+                        'p3'          => [$item->P3_TCAR ?? null, $item->P3_TENT ?? null], // si aplica
+                        'T_CAR'       => (int)$item->T_CARAMBOLAS,
+                        'T_ENT'       => (int)$item->T_ENTRADAS,
+                        'PROM'        => $item->PROM,
+                        'S_PASE_GRUPOS' => $item->SORTEO_PASE_GRUPOS,
+                    ];
+                })->toArray();
+            })
+            ->toArray();
+    }
+
+    public function getDataAll2()
+    {
+        $this->grupos2 = TournamentPlayer::with(['player.club'])
+            ->whereNotNull('sorteo_principal') // Solo jugadores con sorteo definido
+            ->where('horario', '17:00')        // Filtro por horario 14:00
             ->orderBy('sorteo_principal', 'asc') // Orden ascendente por sorteo
             ->get()
             ->chunk(3) // Agrupar cada 3 jugadores
@@ -88,6 +117,7 @@ class TournamentPlayersGroup extends Component
     {
         $this->idtournament = $idtournament;
         $this->getDataAll();
+        $this->getDataAll2();
     }
 
     public function render()
