@@ -130,7 +130,7 @@
 			@foreach ($grupos2 as $gIndex => $grupo)
 			<div class="card shadow-sm rounded mb-4 mt-3">
 				<div style="background-color: #4b6584 ;" class="card-header text-white text-center fs-5 fw-bold">
-					GRUPO {{ $gIndex + 1 }} ( 14:00 HRS )
+					GRUPO {{ $gIndex + 1 }} ( 17:00 HRS )
 				</div>
 				<div class="card-body p-0">
 					<div class="table-responsive">
@@ -188,7 +188,7 @@
 											<td>
 											<input
 												type="number"
-												wire:model.defer="grupos.{{ $gIndex }}.{{ $jugadorId }}.p{{ $currentMatch + 1 }}.{{ $k }}"
+												wire:model.defer="grupos2.{{ $gIndex }}.{{ $jugadorId }}.p{{ $currentMatch + 1 }}.{{ $k }}"
 												class="form-control form-control-sm text-center"
 												style="padding:0 .25rem; font-size:1rem; line-height:1; height:1.5em; border:none; box-shadow:none; outline:none;" />
 											</td>
@@ -204,7 +204,7 @@
 											<td>
 												<input
 													type="text"
-													wire:model.defer="grupos.{{ $gIndex }}.{{ $jugadorId }}.S_PASE_GRUPOS"
+													wire:model.defer="grupos2.{{ $gIndex }}.{{ $jugadorId }}.S_PASE_GRUPOS"
 													class="form-control form-control-sm text-center"
 													style="padding:0 .25rem; font-size:1rem; line-height:1; height:1.5em; border:none; box-shadow:none; outline:none;" />
 											</td>
