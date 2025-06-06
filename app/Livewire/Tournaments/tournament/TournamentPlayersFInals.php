@@ -2,278 +2,567 @@
 
 namespace App\Livewire\Tournaments\tournament;
 
+use App\Models\Game;
 use App\Models\TournamentPlayer;
 use Livewire\Component;
-use Illuminate\Support\Arr;
 
 class TournamentPlayersFinals extends Component
 {
 
-    public $id_tournament;
-    public $enfrentamientos2 = [];
-    public $enfrentamientos8 = [];
-    public $enfrentamientos4 = [];
-    public $enfrentamientofinal = [];
-    public $jugadores8 = [];
-    public $jugadores4 = [];
-    public $jugadores2 = [];
-    public $jugadoresDirectos = [];
-    public $ajustesSeleccionados8 = [];
-    public $ajustesSeleccionados4 = [];
-    public $ajustesSeleccionados2 = [];
-    public $ganadores8 = [];
-    public $ganadores4 = [];
+	public $id_tournament;
+	public $enfrentamientos2 = [];
+	public $enfrentamientos8 = [];
+	public $enfrentamientos4 = [];
+	public $enfrentamientofinal = [];
+	public $jugadores8 = [];
+	public $jugadores4 = [];
+	public $jugadores2 = [];
+	public $jugadoresDirectos = [];
+	public $ajustesSeleccionados8 = [];
+	public $ajustesSeleccionados4 = [];
+	public $ajustesSeleccionados2 = [];
+	public $ganadores8 = [];
+	public $ganadores4 = [];
+	public $mesasOcupadas = [];
+	public $mesasDisponibles = [];
+	public $mesaActual = [];
+	public $juegosGuardados8 = [];
+	public $estatusSeleccionados8 = [];
 
-    public function mount()
-    {
-        $this->ronda8();
-        $this->mostrarganadores8();
-        $this->ronda4();
-        $this->mostrarganadores4();
-        $this->ronda2();
-    }
+	public function mount()
+	{
+		$this->loadandupdateData8();
+		$this->loadandupdateData4();
+		$this->loadandupdateData2();
+	}
 
-    public function guardarAjustes()
-    {
-        $this->guardar8();
-        $this->guardar4();
-        $this->guardar2();
+	public function cargarMesasDisponibles()
+	{
+		$this->mesasOcupadas = Game::where('id_tournament', $this->id_tournament)
+			->where('estatus', 1)
+			->pluck('mesa')
+			->filter() // evitar valores nulos
+			->unique()
+			->toArray();
+		$this->mesasDisponibles = array_diff(range(1, 11), $this->mesasOcupadas);
+	}
 
+	public function guardarAjustes()
+	{
+		$this->guardar8();
+		$this->guardar4();
+		$this->guardar2();
+		$this->loadData8Main();
+		$this->loadData4Main();
+		$this->loadData2Main();
+		$this->dispatch('general-guardado');
+	}
 
-        $this->dispatch('grupos-guardados');
-    }
+	//////////////////// RONDA 8 //////////////////////////
 
-    public function guardar8()
-    {
-        foreach ($this->enfrentamientos8 as $index => $row) {
-            [$clave1, $clave2, $num4] = $row;
+	public function loadandupdateData8()
+	{
+		$this->loadData8Main();
+		$this->cargarJuegosGuardados8();
+		$this->cargarganadoresactuales8();
+		$this->cargarMesasDisponibles();
+	}
 
-            $jugador1 = $this->jugadores8[$clave1] ?? null;
-            $jugador2 = $this->jugadores8[$clave2] ?? null;
+	public function loadData8Main()
+	{
+		$this->enfrentamientos8 = [
+			['1', '2'],
+			['3', '4'],
+			['5', '6'],
+			['7', '8'],
+		];
 
-            $ganadorId = $this->ganadores8[$index] ?? null;
-
-            foreach ([$jugador1, $jugador2] as $jugador) {
-                if (!$jugador) continue;
-
-                $tp = TournamentPlayer::find($jugador['id']);
-                if (!$tp) continue;
-
-                if ($jugador['id'] == $ganadorId) {
-                    $tp->R_8 = 1;
-                    $tp->NUM_4 = $num4;
-                } else {
-                    if ($ganadorId !== null) {
-                        $tp->R_8 = 0;
-                        $tp->NUM_4 = null;
-                    }
-                }
-
-                $tp->save();
-            }
-        }
-
-        $this->ronda4(); // recarga resultados si es necesario
-    }
+		$this->mesaActual = [];
 
 
-    public function guardar4()
-    {
-        foreach ($this->enfrentamientos4 as $index => $row) {
-            [$clave1, $clave2, $num4] = $row;
+		$jugadoresCollection8  = TournamentPlayer::with('player')
+			->where('id_tournament', $this->id_tournament)
+			->where('NUM_8', '<=', 8)
+			->orderBy('NUM_8')
+			->get();
 
-            $jugador1 = $this->jugadores4[$clave1] ?? null;
-            $jugador2 = $this->jugadores4[$clave2] ?? null;
 
-            if (!$jugador1 || !$jugador2) {
-                continue;
-            }
+		$this->jugadores8 = $jugadoresCollection8->map(function ($jp) {
+			return [
+				'id' => $jp->id,
+				'id_player' => $jp->player->id,
+				'nombre' => $jp->player->name_player ?? 'Sin nombre',
+				'NUM_8' => $jp->NUM_8,
+			];
+		})->keyBy('NUM_8')->all();
+	}
 
-            $ganadorId = $this->ganadores4[$index] ?? null;
+	public function cargarJuegosGuardados8()
+	{
+		foreach ($this->enfrentamientos8 as [$clave1, $clave2]) {
+			if (!isset($this->jugadores8[$clave1]) || !isset($this->jugadores8[$clave2])) {
+				continue;
+			}
 
-            foreach ([$jugador1, $jugador2] as $jugador) {
-                $tp = TournamentPlayer::find($jugador['id']);
-                if (!$tp) continue;
+			$jugador1 = $this->jugadores8[$clave1];
+			$jugador2 = $this->jugadores8[$clave2];
 
-                if ($jugador['id'] == $ganadorId) {
-                    $tp->R_8 = 1;
-                    $tp->NUM_4 = $num4;
-                } else {
-                    $tp->R_8 = 0;
-                    $tp->NUM_4 = null;
-                }
+			$juego = Game::where('id_tournament', $this->id_tournament)
+				->where('ronda', 6) // o usa $this->ronda si es dinámico
+				->where('p1', $jugador1['id_player'])
+				->where('p2', $jugador2['id_player'])
+				->first();
 
-                $tp->save();
-            }
-        }
-        $this->ronda4();
-    }
+			if ($juego) {
+				$claveJuego = $clave1 . '-' . $clave2;
+				$this->juegosGuardados8[$claveJuego] = $juego;
 
-    public function guardar2()
-    {
-        foreach ($this->enfrentamientos2 as $index => $row) {
+				$this->estatusSeleccionados8[$juego->id] = $juego->estatus;
+				$this->mesaSeleccionada[$juego->id] = $juego->mesa;
+			}
+		}
+	}
 
-            foreach (array_slice($row, 0, 2) as $sorteoSubita) {
-                $jugador = collect($this->jugadores2)->get($sorteoSubita);
-                if (!$jugador) {
-                    continue;
-                }
-                $idJugador    = $jugador['id'];
-                $key          = (string) $idJugador;
-                $seleccionado = $this->ajustesSeleccionados2[$key] ?? false;
+	public function cargarganadoresactuales8()
+	{
+		$this->ajustesSeleccionados8 = [];
 
-                $tp = TournamentPlayer::find($idJugador);
-                if (!$tp) {
-                    continue;
-                }
-                if ($seleccionado) {
-                    $tp->R_FINAL  = 1;
-                } else {
-                    $tp->R_FINAL  = 0;
-                }
+		foreach ($this->enfrentamientos8 as [$clave1, $clave2]) {
+			if (!isset($this->jugadores8[$clave1]) || !isset($this->jugadores8[$clave2])) {
+				continue; // Saltar este enfrentamiento si falta uno de los dos jugadores
+			}
+			$jugador1 = $this->jugadores8[$clave1];
+			$jugador2 = $this->jugadores8[$clave2];
 
-                $tp->save();
-            }
-        }
-    }
+			$juego = Game::where('id_tournament', $this->id_tournament)
+				->where('ronda', 6)
+				->where('p1', $jugador1['id_player'])
+				->where('p2', $jugador2['id_player'])
+				->first();
 
-    public function ronda8()
-    {
+			if ($juego) {
+				if ($juego->wp1 == 1) {
+					$this->ajustesSeleccionados8[$jugador1['id_player']] = true;
+				}
+				if ($juego->wp2 == 1) {
+					$this->ajustesSeleccionados8[$jugador2['id_player']] = true;
+				}
+			}
+		}
+	}
 
-        $this->enfrentamientos8 = [
-            ['1', '2', '1'],
-            ['3', '4', '2'],
-            ['5', '6', '3'],
-            ['7', '8', '4'],
-        ];
+	public function guardar8()
+	{
+		foreach ($this->enfrentamientos8 as $index => $par) {
+			[$clave1, $clave2] = $par;
 
-        $this->ajustesSeleccionados8 = TournamentPlayer::where('id_tournament', $this->id_tournament)
-            ->pluck('R_8', 'id')
-            ->map(function ($valor) {
-                return $valor == 1;
-            })->toArray();
+			if (isset($this->jugadores8[$clave1]) && isset($this->jugadores8[$clave2])) {
+				$jugador1 = $this->jugadores8[$clave1];
+				$jugador2 = $this->jugadores8[$clave2];
 
-        $jugadoresCollection8  = TournamentPlayer::with('player')
-            ->where('id_tournament', $this->id_tournament)
-            ->where('R_16', 1)
-            ->where('NUM_8', '<=', 8)
-            ->orderBy('NUM_8')
-            ->get();
+				$juego = Game::where('id_tournament', $this->id_tournament)
+					->where('ronda', 6)
+					->where('p1', $jugador1['id_player'])
+					->where('p2', $jugador2['id_player'])
+					->first();
 
-        $this->jugadores8 = $jugadoresCollection8->map(function ($jp) {
-            return [
-                'id' => $jp->id,
-                'nombre' => $jp->player->name_player ?? 'Sin nombre',
-                'NUM_8' => $jp->NUM_8,
-            ];
-        })->keyBy('NUM_8')->all();
-    }
+				$mesa = $juego ? ($this->mesaSeleccionada[$juego->id] ?? $juego->mesa) : ($this->mesaSeleccionada[$index] ?? null);
 
-    public function ronda4()
-    {
-        $this->enfrentamientos4 = [
-            ['1', '2', '1'],
-            ['3', '4', '2'],
-        ];
+				$ganador1 = !empty($this->ajustesSeleccionados8[$jugador1['id_player']]);
+				$ganador2 = !empty($this->ajustesSeleccionados8[$jugador2['id_player']]);
 
-        $this->ajustesSeleccionados4 = TournamentPlayer::where('id_tournament', $this->id_tournament)
-            ->pluck('R_SEMIF', 'id')
-            ->map(function ($valor) {
-                return $valor == 1;
-            })->toArray();
+				$wp1 = $ganador1 ? 1 : 0;
+				$wp2 = $ganador2 ? 1 : 0;
 
-        $jugadoresCollection4 = TournamentPlayer::with('player')
-            ->where('id_tournament', $this->id_tournament)
-            ->where('R_8', 1)
-            ->where('NUM_4', '<=', 4)
-            ->orderBy('NUM_4')
-            ->get();
+				if ($juego) {
+					$juego->update([
+						'wp1' => $wp1,
+						'wp2' => $wp2,
+						'estatus' => $this->estatusSeleccionados8[$juego->id] ?? 0,
+						'mesa' => $mesa,
+					]);
+				} else {
+					Game::create([
+						'id_tournament' => $this->id_tournament,
+						'mesa' => $mesa,
+						'CP1' => $clave1,
+						'p1' => $jugador1['id_player'],
+						'wp1' => $wp1,
+						'p2' => $jugador2['id_player'],
+						'wp2' => $wp2,
+						'CP2' => $clave2,
+						'ronda' => 6,
+						'estatus' => $this->estatusSeleccionados8[$index] ?? 0, // si no hay juego, usa el índice
+					]);
+				}
 
-        $this->jugadores4 = $jugadoresCollection4->map(function ($jp) {
-            return [
-                'id' => $jp->id,
-                'nombre' => $jp->player->name_player ?? 'Sin nombre',
-                'NUM_4' => $jp->NUM_4,
-            ];
-        })->keyBy('NUM_4')->all();
-    }
+				// Actualizar ganador y perdedor en TournamentPlayer
+				if ($ganador1) {
+					TournamentPlayer::where('id_tournament', $this->id_tournament)
+						->where('id_player', $jugador1['id_player'])
+						->update([
+							'NUM_4' => $index + 1, // Aquí se asigna el número de posición
+						]);
 
-    public function ronda2()
-    {
-        $this->enfrentamientos2 = [
-            ['1', '2', '1'],
-        ];
+					TournamentPlayer::where('id_tournament', $this->id_tournament)
+						->where('id_player', $jugador2['id_player'])
+						->update(['NUM_4' => null]);
+				}
 
-        $this->ajustesSeleccionados2 = TournamentPlayer::where('id_tournament', $this->id_tournament)
-            ->pluck('R_FINAL', 'id')
-            ->map(function ($valor) {
-                return $valor == 1;
-            })->toArray();
+				if ($ganador2) {
+					TournamentPlayer::where('id_tournament', $this->id_tournament)
+						->where('id_player', $jugador2['id_player'])
+						->update([
+							'NUM_4' => $index + 1, // Aquí también
+						]);
 
-        $jugadoresCollection2 = TournamentPlayer::with('player')
-            ->where('id_tournament', $this->id_tournament)
-            ->where('R_SEMIF', 1)
-            ->where('NUM_2', '<=', 2)
-            ->orderBy('NUM_2')
-            ->get();
+					TournamentPlayer::where('id_tournament', $this->id_tournament)
+						->where('id_player', $jugador1['id_player'])
+						->update(['NUM_4' => null]);
+				}
+			}
+		}
+	}
 
-        $this->jugadores2 = $jugadoresCollection2->map(function ($jp) {
-            return [
-                'id' => $jp->id,
-                'nombre' => $jp->player->name_player ?? 'Sin nombre',
-                'NUM_2' => $jp->NUM_2,
-            ];
-        })->keyBy('NUM_2')->all();
-    }
+	//////////////////// RONDA 8 //////////////////////////
 
-    public function mostrarganadores8()
-    {
-        $this->ganadores8 = [];
 
-        foreach ($this->enfrentamientos8 as $index => $row) {
-            [$clave1, $clave2] = $row;
+	//////////////////// RONDA SEMIFINAL //////////////////////////
 
-            $j1 = $this->jugadores8[$clave1] ?? null;
-            $j2 = $this->jugadores8[$clave2] ?? null;
+	public function loadandupdateData4()
+	{
+		$this->loadData4Main();
+		$this->cargarJuegosGuardados4();
+		$this->cargarganadoresactuales4();
+		$this->cargarMesasDisponibles();
+	}
 
-            if (!$j1 || !$j2) continue;
+	public function loadData4Main()
+	{
+		$this->enfrentamientos4 = [
+			['1', '2'],
+			['3', '4'],
+		];
 
-            $tp1 = TournamentPlayer::find($j1['id']);
-            $tp2 = TournamentPlayer::find($j2['id']);
+		$this->mesaActual = [];
 
-            if ($tp1 && $tp1->R_8 == 1) {
-                $this->ganadores8[$index] = $tp1->id;
-            } elseif ($tp2 && $tp2->R_8 == 1) {
-                $this->ganadores8[$index] = $tp2->id;
-            }
-        }
-    }
 
-    public function mostrarganadores4()
-    {
-        $this->ganadores4 = [];
+		$jugadoresCollection4  = TournamentPlayer::with('player')
+			->where('id_tournament', $this->id_tournament)
+			->where('NUM_4', '<=', 4)
+			->orderBy('NUM_4')
+			->get();
 
-        foreach ($this->enfrentamientos4 as $index => $row) {
-            [$clave1, $clave2] = $row;
 
-            $j1 = $this->jugadores4[$clave1] ?? null;
-            $j2 = $this->jugadores4[$clave2] ?? null;
+		$this->jugadores4 = $jugadoresCollection4->map(function ($jp) {
+			return [
+				'id' => $jp->id,
+				'id_player' => $jp->player->id,
+				'nombre' => $jp->player->name_player ?? 'Sin nombre',
+				'NUM_4' => $jp->NUM_4,
+			];
+		})->keyBy('NUM_4')->all();
+	}
 
-            if (!$j1 || !$j2) continue;
+	public function cargarJuegosGuardados4()
+	{
+		foreach ($this->enfrentamientos4 as [$clave1, $clave2]) {
+			if (!isset($this->jugadores4[$clave1]) || !isset($this->jugadores4[$clave2])) {
+				continue;
+			}
 
-            $tp1 = TournamentPlayer::find($j1['id']);
-            $tp2 = TournamentPlayer::find($j2['id']);
+			$jugador1 = $this->jugadores4[$clave1];
+			$jugador2 = $this->jugadores4[$clave2];
 
-            if ($tp1 && $tp1->R_8 == 1) {
-                $this->ganadores4[$index] = $tp1->id;
-            } elseif ($tp2 && $tp2->R_8 == 1) {
-                $this->ganadores4[$index] = $tp2->id;
-            }
-        }
-    }
+			$juego = Game::where('id_tournament', $this->id_tournament)
+				->where('ronda', 7) // o usa $this->ronda si es dinámico
+				->where('p1', $jugador1['id_player'])
+				->where('p2', $jugador2['id_player'])
+				->first();
 
-    public function render()
-    {
-        return view('livewire.tournaments.tournament.tournament-player-finals');
-    }
+			if ($juego) {
+				$claveJuego = $clave1 . '-' . $clave2;
+				$this->juegosGuardados4[$claveJuego] = $juego;
+
+				$this->estatusSeleccionados4[$juego->id] = $juego->estatus;
+				$this->mesaSeleccionada[$juego->id] = $juego->mesa;
+			}
+		}
+	}
+
+	public function cargarganadoresactuales4()
+	{
+		$this->ajustesSeleccionados4 = [];
+
+		foreach ($this->enfrentamientos4 as [$clave1, $clave2]) {
+			if (!isset($this->jugadores4[$clave1]) || !isset($this->jugadores4[$clave2])) {
+				continue; // Saltar este enfrentamiento si falta uno de los dos jugadores
+			}
+			$jugador1 = $this->jugadores4[$clave1];
+			$jugador2 = $this->jugadores4[$clave2];
+
+			$juego = Game::where('id_tournament', $this->id_tournament)
+				->where('ronda', 7)
+				->where('p1', $jugador1['id_player'])
+				->where('p2', $jugador2['id_player'])
+				->first();
+
+			if ($juego) {
+				if ($juego->wp1 == 1) {
+					$this->ajustesSeleccionados4[$jugador1['id_player']] = true;
+				}
+				if ($juego->wp2 == 1) {
+					$this->ajustesSeleccionados4[$jugador2['id_player']] = true;
+				}
+			}
+		}
+	}
+
+	public function guardar4()
+	{
+		foreach ($this->enfrentamientos4 as $index => $par) {
+			[$clave1, $clave2] = $par;
+
+			if (isset($this->jugadores4[$clave1]) && isset($this->jugadores4[$clave2])) {
+				$jugador1 = $this->jugadores4[$clave1];
+				$jugador2 = $this->jugadores4[$clave2];
+
+				$juego = Game::where('id_tournament', $this->id_tournament)
+					->where('ronda', 7)
+					->where('p1', $jugador1['id_player'])
+					->where('p2', $jugador2['id_player'])
+					->first();
+
+				$mesa = $juego ? ($this->mesaSeleccionada[$juego->id] ?? $juego->mesa) : ($this->mesaSeleccionada[$index] ?? null);
+
+				$ganador1 = !empty($this->ajustesSeleccionados4[$jugador1['id_player']]);
+				$ganador2 = !empty($this->ajustesSeleccionados4[$jugador2['id_player']]);
+
+				$wp1 = $ganador1 ? 1 : 0;
+				$wp2 = $ganador2 ? 1 : 0;
+
+				if ($juego) {
+					$juego->update([
+						'wp1' => $wp1,
+						'wp2' => $wp2,
+						'estatus' => $this->estatusSeleccionados4[$juego->id] ?? 0,
+						'mesa' => $mesa,
+					]);
+				} else {
+					Game::create([
+						'id_tournament' => $this->id_tournament,
+						'mesa' => $mesa,
+						'CP1' => $clave1,
+						'p1' => $jugador1['id_player'],
+						'wp1' => $wp1,
+						'p2' => $jugador2['id_player'],
+						'wp2' => $wp2,
+						'CP2' => $clave2,
+						'ronda' => 7,
+						'estatus' => $this->estatusSeleccionados4[$index] ?? 0, // si no hay juego, usa el índice
+					]);
+				}
+
+				// Actualizar ganador y perdedor en TournamentPlayer
+				if ($ganador1) {
+					TournamentPlayer::where('id_tournament', $this->id_tournament)
+						->where('id_player', $jugador1['id_player'])
+						->update([
+							'NUM_2' => $index + 1, // Aquí se asigna el número de posición
+						]);
+
+					TournamentPlayer::where('id_tournament', $this->id_tournament)
+						->where('id_player', $jugador2['id_player'])
+						->update(['NUM_2' => null]);
+				}
+
+				if ($ganador2) {
+					TournamentPlayer::where('id_tournament', $this->id_tournament)
+						->where('id_player', $jugador2['id_player'])
+						->update([
+							'NUM_2' => $index + 1, // Aquí también
+						]);
+
+					TournamentPlayer::where('id_tournament', $this->id_tournament)
+						->where('id_player', $jugador1['id_player'])
+						->update(['NUM_2' => null]);
+				}
+			}
+		}
+	}
+
+	//////////////////// RONDA SEMIFINAL //////////////////////////
+
+
+
+	//////////////////// RONDA FINAL //////////////////////////
+
+	public function loadandupdateData2()
+	{
+		$this->loadData2Main();
+		$this->cargarJuegosGuardados2();
+		$this->cargarganadoresactuales2();
+		$this->cargarMesasDisponibles();
+	}
+
+	public function loadData2Main()
+	{
+		$this->enfrentamientos2 = [
+			['1', '2'],
+		];
+
+		$this->mesaActual = [];
+
+
+		$jugadoresCollection2  = TournamentPlayer::with('player')
+			->where('id_tournament', $this->id_tournament)
+			->where('NUM_4', '<=', 4)
+			->orderBy('NUM_4')
+			->get();
+
+
+		$this->jugadores2 = $jugadoresCollection2->map(function ($jp) {
+			return [
+				'id' => $jp->id,
+				'id_player' => $jp->player->id,
+				'nombre' => $jp->player->name_player ?? 'Sin nombre',
+				'NUM_2' => $jp->NUM_4,
+			];
+		})->keyBy('NUM_2')->all();
+	}
+
+	public function cargarJuegosGuardados2()
+	{
+		foreach ($this->enfrentamientos2 as [$clave1, $clave2]) {
+			if (!isset($this->jugadores2[$clave1]) || !isset($this->jugadores2[$clave2])) {
+				continue;
+			}
+
+			$jugador1 = $this->jugadores2[$clave1];
+			$jugador2 = $this->jugadores2[$clave2];
+
+			$juego = Game::where('id_tournament', $this->id_tournament)
+				->where('ronda', 8) // o usa $this->ronda si es dinámico
+				->where('p1', $jugador1['id_player'])
+				->where('p2', $jugador2['id_player'])
+				->first();
+
+			if ($juego) {
+				$claveJuego = $clave1 . '-' . $clave2;
+				$this->juegosGuardados2[$claveJuego] = $juego;
+
+				$this->estatusSeleccionados2[$juego->id] = $juego->estatus;
+				$this->mesaSeleccionada[$juego->id] = $juego->mesa;
+			}
+		}
+	}
+
+	public function cargarganadoresactuales2()
+	{
+		$this->ajustesSeleccionados2 = [];
+
+		foreach ($this->enfrentamientos2 as [$clave1, $clave2]) {
+			if (!isset($this->jugadores2[$clave1]) || !isset($this->jugadores2[$clave2])) {
+				continue; // Saltar este enfrentamiento si falta uno de los dos jugadores
+			}
+			$jugador1 = $this->jugadores2[$clave1];
+			$jugador2 = $this->jugadores2[$clave2];
+
+			$juego = Game::where('id_tournament', $this->id_tournament)
+				->where('ronda', 8)
+				->where('p1', $jugador1['id_player'])
+				->where('p2', $jugador2['id_player'])
+				->first();
+
+			if ($juego) {
+				if ($juego->wp1 == 1) {
+					$this->ajustesSeleccionados2[$jugador1['id_player']] = true;
+				}
+				if ($juego->wp2 == 1) {
+					$this->ajustesSeleccionados2[$jugador2['id_player']] = true;
+				}
+			}
+		}
+	}
+
+	public function guardar2()
+	{
+		foreach ($this->enfrentamientos2 as $index => $par) {
+			[$clave1, $clave2] = $par;
+
+			if (isset($this->jugadores2[$clave1]) && isset($this->jugadores2[$clave2])) {
+				$jugador1 = $this->jugadores2[$clave1];
+				$jugador2 = $this->jugadores2[$clave2];
+
+				$juego = Game::where('id_tournament', $this->id_tournament)
+					->where('ronda', 8)
+					->where('p1', $jugador1['id_player'])
+					->where('p2', $jugador2['id_player'])
+					->first();
+
+				$mesa = $juego ? ($this->mesaSeleccionada[$juego->id] ?? $juego->mesa) : ($this->mesaSeleccionada[$index] ?? null);
+
+				$ganador1 = !empty($this->ajustesSeleccionados2[$jugador1['id_player']]);
+				$ganador2 = !empty($this->ajustesSeleccionados2[$jugador2['id_player']]);
+
+				$wp1 = $ganador1 ? 1 : 0;
+				$wp2 = $ganador2 ? 1 : 0;
+
+				if ($juego) {
+					$juego->update([
+						'wp1' => $wp1,
+						'wp2' => $wp2,
+						'estatus' => $this->estatusSeleccionados2[$juego->id] ?? 0,
+						'mesa' => $mesa,
+					]);
+				} else {
+					Game::create([
+						'id_tournament' => $this->id_tournament,
+						'mesa' => $mesa,
+						'CP1' => $clave1,
+						'p1' => $jugador1['id_player'],
+						'wp1' => $wp1,
+						'p2' => $jugador2['id_player'],
+						'wp2' => $wp2,
+						'CP2' => $clave2,
+						'ronda' => 8,
+						'estatus' => $this->estatusSeleccionados2[$index] ?? 0, // si no hay juego, usa el índice
+					]);
+				}
+
+				// Actualizar ganador y perdedor en TournamentPlayer
+				if ($ganador1) {
+					TournamentPlayer::where('id_tournament', $this->id_tournament)
+						->where('id_player', $jugador1['id_player'])
+						->update([
+							'R_FINAL' => 1, // Aquí se asigna el número de posición
+						]);
+
+					TournamentPlayer::where('id_tournament', $this->id_tournament)
+						->where('id_player', $jugador2['id_player'])
+						->update(['R_FINAL' => null]);
+				}
+
+				if ($ganador2) {
+					TournamentPlayer::where('id_tournament', $this->id_tournament)
+						->where('id_player', $jugador2['id_player'])
+						->update([
+							'R_FINAL' =>  1, // Aquí también
+						]);
+
+					TournamentPlayer::where('id_tournament', $this->id_tournament)
+						->where('id_player', $jugador1['id_player'])
+						->update(['R_FINAL' => null]);
+				}
+			}
+		}
+	}
+
+	//////////////////// RONDA SEMIFINAL //////////////////////////
+
+
+	public function render()
+	{
+		return view('livewire.tournaments.tournament.tournament-player-finals');
+	}
 }

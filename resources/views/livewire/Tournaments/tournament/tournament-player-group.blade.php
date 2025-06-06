@@ -19,12 +19,12 @@
 
 
 	<div class="nav nav-tabs d-flex mt-4" id="grupoTabs" role="tablist">
-		<button class="nav-link flex-fill text-center active text-dark" id="grupo100-tab"
+		<button wire:click="setActiveTab('grupos1')" class="nav-link flex-fill text-center text-dark @if($activeTab === 'grupos1') active @endif" id="grupo100-tab"
 			data-bs-toggle="tab" data-bs-target="#grupo100" type="button" role="tab"
 			aria-controls="grupo100" aria-selected="true">
 			GRUPOS 14:00 Hrs
 		</button>
-		<button class="nav-link flex-fill text-center text-dark" id="grupo170-tab"
+		<button wire:click="setActiveTab('grupos2')" class="nav-link flex-fill text-center text-dark @if($activeTab === 'grupos2') active @endif" id="grupo170-tab"
 			data-bs-toggle="tab" data-bs-target="#grupo170" type="button" role="tab"
 			aria-controls="grupo170" aria-selected="false">
 			GRUPOS 17:00 Hrs
@@ -34,7 +34,7 @@
 
 	<div class="tab-content mt-4" id="grupoTabsContent">
 		<!-- Jugadores 14:00 -->
-		<div class="tab-pane fade show active" id="grupo100" role="tabpanel" aria-labelledby="grupo100-tab">
+		<div class="tab-pane fade @if($activeTab === 'grupos1') show active @endif" id="grupo100" role="tabpanel" aria-labelledby="grupo100-tab">
 			@foreach ($grupos as $gIndex => $grupo)
 			<div class="card shadow-sm rounded mb-4 mt-3">
 				<div style="background-color: #4b6584 ;" class="card-header text-white text-center fs-5 fw-bold">
@@ -126,7 +126,7 @@
 			@endforeach
 		</div>
 		<!-- Jugadores 17:00 -->
-		<div class="tab-pane fade" id="grupo170" role="tabpanel" aria-labelledby="grupo170-tab">
+		<div class="tab-pane fade @if($activeTab === 'grupos2') show active @endif" id="grupo170" role="tabpanel" aria-labelledby="grupo170-tab">
 			@foreach ($grupos2 as $gIndex => $grupo)
 			<div class="card shadow-sm rounded mb-4 mt-3">
 				<div style="background-color: #4b6584 ;" class="card-header text-white text-center fs-5 fw-bold">

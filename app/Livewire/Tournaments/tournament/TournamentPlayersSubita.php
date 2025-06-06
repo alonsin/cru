@@ -6,6 +6,7 @@ use App\Models\Game;
 use App\Models\TournamentPlayer;
 use Livewire\Component;
 use Illuminate\Support\Arr;
+use Livewire\Attributes\On;
 
 class TournamentPlayersSubita extends Component
 {
@@ -33,6 +34,14 @@ class TournamentPlayersSubita extends Component
 
 	public function mount()
 	{
+		$this->loadandupdateDataSubita();
+	}
+
+	#[On('updateDataFromSubita')]
+	public function updateDataFromSubita()
+	{
+		$this->guardarAjustesSubita1();
+		$this->guardarAjustesSubita2();
 		$this->loadandupdateDataSubita();
 	}
 
@@ -181,6 +190,7 @@ class TournamentPlayersSubita extends Component
 	public function guardarAjustesSubita1()
 	{
 		foreach ($this->enfrentamientos1 as $index => $par) {
+
 			[$clave1, $clave2] = $par;
 
 			if (isset($this->jugadores1[$clave1]) && isset($this->jugadores1[$clave2])) {
@@ -194,6 +204,9 @@ class TournamentPlayersSubita extends Component
 					->where('p1', $jugador1['id_player'])
 					->where('p2', $jugador2['id_player'])
 					->first();
+
+
+				// dd($juego);
 
 				$mesa = $juego ? ($this->mesaSeleccionada[$juego->id] ?? $juego->mesa) : ($this->mesaSeleccionada[$index] ?? null);
 
@@ -211,7 +224,8 @@ class TournamentPlayersSubita extends Component
 						'mesa' => $mesa,
 					]);
 				} else {
-					Game::create([
+					// dd("else");
+					$juegocreado = 	Game::create([
 						'id_tournament' => $this->id_tournament,
 						'mesa' => $mesa,
 						'CP1' => $clave1,
@@ -223,6 +237,8 @@ class TournamentPlayersSubita extends Component
 						'ronda' => 2,
 						'estatus' => $this->estatusSeleccionados1[$index] ?? 0,
 					]);
+
+					// dd($juegocreado);
 				}
 
 				$valorJugador1 = isset($this->sorteossubita1[$jugador1['id_player']]) && $this->sorteossubita1[$jugador1['id_player']] !== ''
@@ -235,38 +251,58 @@ class TournamentPlayersSubita extends Component
 
 				if ($ganador1) {
 					// Jugador 1 es ganador
+					$updateJugador1 = [
+						'SORTEO_SUBITA' => $valorJugador1,
+						'R_SUBITA' => 1,
+					];
+					if ($valorJugador1 !== null && $valorJugador1 <= 16) {
+						$updateJugador1['SORTEO_TO_16'] = $valorJugador1;
+					}
+
 					TournamentPlayer::where('id_tournament', $this->id_tournament)
 						->where('id_player', $jugador1['id_player'])
-						->update([
-							'SORTEO_SUBITA' => $valorJugador1,
-							'R_SUBITA' => 1,
-						]);
+						->update($updateJugador1);
 
 					// Jugador 2 es perdedor
+					$updateJugador2 = [
+						'SORTEO_SUBITA' => $valorJugador2,
+						'R_SUBITA' => null,
+					];
+					if ($valorJugador2 !== null && $valorJugador2 <= 16) {
+						$updateJugador2['SORTEO_TO_16'] = $valorJugador2;
+					}
+
 					TournamentPlayer::where('id_tournament', $this->id_tournament)
 						->where('id_player', $jugador2['id_player'])
-						->update([
-							'SORTEO_SUBITA' => $valorJugador2,
-							'R_SUBITA' => null,
-						]);
+						->update($updateJugador2);
 				}
 
 				if ($ganador2) {
 					// Jugador 2 es ganador
+					$updateJugador2 = [
+						'SORTEO_SUBITA' => $valorJugador2,
+						'R_SUBITA' => 1,
+					];
+					if ($valorJugador2 !== null && $valorJugador2 <= 16) {
+						$updateJugador2['SORTEO_TO_16'] = $valorJugador2;
+					}
+
 					TournamentPlayer::where('id_tournament', $this->id_tournament)
 						->where('id_player', $jugador2['id_player'])
-						->update([
-							'SORTEO_SUBITA' => $valorJugador2,
-							'R_SUBITA' => 1,
-						]);
+						->update($updateJugador2);
 
 					// Jugador 1 es perdedor
+					$updateJugador1 = [
+						'SORTEO_SUBITA' => $valorJugador1,
+						'R_SUBITA' => null,
+					];
+					if ($valorJugador1 !== null && $valorJugador1 <= 16) {
+						$updateJugador1['SORTEO_TO_16'] = $valorJugador1;
+					}
+
 					TournamentPlayer::where('id_tournament', $this->id_tournament)
 						->where('id_player', $jugador1['id_player'])
-						->update([
-							'SORTEO_SUBITA' => $valorJugador1,
-							'R_SUBITA' => null,
-						]);
+						->update($updateJugador1);
 				}
 			}
 		}
@@ -440,38 +476,58 @@ class TournamentPlayersSubita extends Component
 
 				if ($ganador1) {
 					// Jugador 1 es ganador
+					$updateJugador1 = [
+						'SORTEO_SUBITA' => $valorJugador1,
+						'R_SUBITA' => 1,
+					];
+					if ($valorJugador1 !== null && $valorJugador1 <= 16) {
+						$updateJugador1['SORTEO_TO_16'] = $valorJugador1;
+					}
+
 					TournamentPlayer::where('id_tournament', $this->id_tournament)
 						->where('id_player', $jugador1['id_player'])
-						->update([
-							'SORTEO_SUBITA' => $valorJugador1,
-							'R_SUBITA' => 1,
-						]);
+						->update($updateJugador1);
 
 					// Jugador 2 es perdedor
+					$updateJugador2 = [
+						'SORTEO_SUBITA' => $valorJugador2,
+						'R_SUBITA' => null,
+					];
+					if ($valorJugador2 !== null && $valorJugador2 <= 16) {
+						$updateJugador2['SORTEO_TO_16'] = $valorJugador2;
+					}
+
 					TournamentPlayer::where('id_tournament', $this->id_tournament)
 						->where('id_player', $jugador2['id_player'])
-						->update([
-							'SORTEO_SUBITA' => $valorJugador2,
-							'R_SUBITA' => null,
-						]);
+						->update($updateJugador2);
 				}
 
 				if ($ganador2) {
 					// Jugador 2 es ganador
+					$updateJugador2 = [
+						'SORTEO_SUBITA' => $valorJugador2,
+						'R_SUBITA' => 1,
+					];
+					if ($valorJugador2 !== null && $valorJugador2 <= 16) {
+						$updateJugador2['SORTEO_TO_16'] = $valorJugador2;
+					}
+
 					TournamentPlayer::where('id_tournament', $this->id_tournament)
 						->where('id_player', $jugador2['id_player'])
-						->update([
-							'SORTEO_SUBITA' => $valorJugador2,
-							'R_SUBITA' => 1,
-						]);
+						->update($updateJugador2);
 
 					// Jugador 1 es perdedor
+					$updateJugador1 = [
+						'SORTEO_SUBITA' => $valorJugador1,
+						'R_SUBITA' => null,
+					];
+					if ($valorJugador1 !== null && $valorJugador1 <= 16) {
+						$updateJugador1['SORTEO_TO_16'] = $valorJugador1;
+					}
+
 					TournamentPlayer::where('id_tournament', $this->id_tournament)
 						->where('id_player', $jugador1['id_player'])
-						->update([
-							'SORTEO_SUBITA' => $valorJugador1,
-							'R_SUBITA' => null,
-						]);
+						->update($updateJugador1);
 				}
 			}
 		}

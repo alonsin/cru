@@ -79,12 +79,12 @@
 						</div>
 
 						<div class="nav nav-tabs d-flex mt-4" id="grupoTabs" role="tablist">
-							<button class="nav-link flex-fill text-center active text-dark" id="grupo14-tab"
+							<button wire:click="setActiveTab2('jugadores1')" class="nav-link flex-fill text-center @if($activeTab2 === 'jugadores1') active @endif text-dark" id="grupo14-tab"
 								data-bs-toggle="tab" data-bs-target="#grupo14" type="button" role="tab"
 								aria-controls="grupo14" aria-selected="true">
 								14:00 Hrs
 							</button>
-							<button class="nav-link flex-fill text-center text-dark" id="grupo17-tab"
+							<button wire:click="setActiveTab2('jugadores2')" class="nav-link flex-fill text-center @if($activeTab2 === 'jugadores2') active @endif text-dark" id="grupo17-tab"
 								data-bs-toggle="tab" data-bs-target="#grupo17" type="button" role="tab"
 								aria-controls="grupo17" aria-selected="false">
 								17:00 Hrs
@@ -94,7 +94,7 @@
 						<!-- Tab Content -->
 						<div class="tab-content mt-4" id="grupoTabsContent">
 							<!-- Jugadores 14:00 -->
-							<div class="tab-pane fade show active" id="grupo14" role="tabpanel" aria-labelledby="grupo14-tab">
+							<div class="tab-pane fade @if($activeTab2 === 'jugadores1') show active @endif" id="grupo14" role="tabpanel" aria-labelledby="grupo14-tab">
 								<!-- Tabla -->
 								<div class="overflow-x-auto mt-3">
 									<livewire:tournaments.tournament.tournament-players-table />
@@ -103,7 +103,7 @@
 							</div>
 
 							<!-- Jugadores 17:00 -->
-							<div class="tab-pane fade" id="grupo17" role="tabpanel" aria-labelledby="grupo17-tab">
+							<div class="tab-pane fade @if($activeTab2 === 'jugadores2') show active @endif" id="grupo17" role="tabpanel" aria-labelledby="grupo17-tab">
 
 								<!-- Tabla -->
 								<div class="overflow-x-auto mt-3">
@@ -168,7 +168,7 @@
 		Livewire.on('general-guardado', () => {
 			Swal.fire({
 				icon: 'success',
-				title: '¡Guardado!',
+				title: '¡Actualizado!',
 				text: 'La información se ha actualizado correctamente.',
 				timer: 2000,
 				showConfirmButton: false

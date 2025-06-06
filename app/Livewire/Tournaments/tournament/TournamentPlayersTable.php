@@ -67,7 +67,8 @@ class TournamentPlayersTable extends DataTableComponent
                 $registro->save();
             }
         }
-
+        
+        $this->dispatch('updateGruposTables');
         $this->dispatch('sorteos-guardados');
     }
 

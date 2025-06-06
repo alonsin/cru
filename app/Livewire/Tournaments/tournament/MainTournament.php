@@ -12,6 +12,7 @@ class MainTournament extends Component
     public $playersTournament = [];
     public $grupos = [];
     public $activeTab = 'jugadores';
+    public $activeTab2 = 'jugadores1';
 
     public function mount()
     {
@@ -22,6 +23,15 @@ class MainTournament extends Component
     public function setActiveTab($tab)
     {
         $this->activeTab = $tab;
+        if ($this->activeTab == "subita") {
+            // dd("aqui cao");
+            $this->dispatch('updateDataFromSubita');
+        }
+    }
+
+    public function setActiveTab2($tab)
+    {
+        $this->activeTab2 = $tab;
     }
 
     public function showModalNewPlayerForTournament()
