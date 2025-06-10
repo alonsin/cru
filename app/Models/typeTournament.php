@@ -15,6 +15,11 @@ class typeTournament extends Model
 		'name',
 	];
 
+	
+	const ABIERTO_MENSUAL_PROMEDIOS = 1;
+	const REGIONAL = 9;
+	
+
 	public function tournaments()
 	{
 		return $this->hasMany(Tournament::class, 'id_type');

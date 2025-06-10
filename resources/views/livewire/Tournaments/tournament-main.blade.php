@@ -16,7 +16,15 @@
 		<div class="container mx-auto px-4 py-1">
 			<div class="overflow-x-auto">
 				@if ($selectedTournament)
+
+				@if ($selectedTournament->id_type == 1)
 				<livewire:tournaments.tournament.main-tournament :tournament="$selectedTournament" />
+				@endif
+				@if ($selectedTournament->id_type == 9)
+				<livewire:tournaments.tournamentregional.main-tournament :tournament="$selectedTournament" />
+				@endif
+
+
 				@else
 				<div class="flex justify-end w-full mt-2 ">
 					<button wire:click="showModalNewTournament()" class="mr-5 bg-lime-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">

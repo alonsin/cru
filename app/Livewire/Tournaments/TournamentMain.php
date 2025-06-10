@@ -23,6 +23,7 @@ class TournamentMain extends Component
     public function viewTournament($id)
     {
         $this->selectedTournament = Tournament::with(['sede', 'type'])->findOrFail($id);
+        // dd($this->selectedTournament->id_type);
     }
 
     public function showModalNewTournament()

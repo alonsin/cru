@@ -92,6 +92,7 @@ class ModalRegistrarTorneo extends Component
             'id_format' => $this->formatoSeleccionada, // Asumiendo que la categoría con id 2 existe
             'id_type' => $this->typeSeleccionada, // Asumiendo que el club con id 3 existe
             'fecha_torneo' => $this->fechaTorneo, // La edad es opcional, puede ser NULL si lo deseas
+            'status' => 1, // La edad es opcional, puede ser NULL si lo deseas
         ];
     }
 
