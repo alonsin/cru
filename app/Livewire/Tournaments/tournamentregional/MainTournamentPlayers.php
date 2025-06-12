@@ -27,6 +27,11 @@ class MainTournamentPlayers extends Component
         );
     }
 
+    public function saveSorteo()
+    {
+        $this->dispatch('setSaveSorteo');
+    }
+
     public function render()
     {
         return view('livewire.tournaments.tournamentregional.main-tournament-players');

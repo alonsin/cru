@@ -61,11 +61,11 @@
 				</ul>
 			</div>
 			<div class="card-body tab-content p-4" id="tournamentTabsContent">
-				<div class="tab-pane fade @if($activeTab === 'jugadores') show active @endif" id="jugadores" role="tabpanel">		
+				<div class="tab-pane fade @if($activeTab === 'jugadores') show active @endif" id="jugadores" role="tabpanel">
 					<livewire:tournaments.tournament-regional.main-tournament-players id_tournament="{{$idtournament}}" />
 				</div>
 				<div class="tab-pane fade @if($activeTab === 'subita') show active @endif" id="ajuste" role="tabpanel">
-					<livewire:tournaments.tournament.tournament-players-subita id_tournament="{{$idtournament}}" />
+					<livewire:tournaments.tournament-regional.tournament-players-subita id_tournament="{{$idtournament}}" />
 				</div>
 				<div class="tab-pane fade @if($activeTab === 'ronda16') show active @endif" id="ajuste16" role="tabpanel">
 					<livewire:tournaments.tournament.tournament-players-ajuste16 id_tournament="{{$idtournament}}" />

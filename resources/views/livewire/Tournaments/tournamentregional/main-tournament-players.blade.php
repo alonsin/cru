@@ -100,8 +100,6 @@
 					<livewire:tournaments.tournament-regional.tournament-players-table5 idtournament="{{$id_tournament}}" />
 				</div>
 			</div>
-
-
 		</div>
 		<livewire:tournaments.tournament-regional.modal-registrar-jugador-tournament />
 	</div>
