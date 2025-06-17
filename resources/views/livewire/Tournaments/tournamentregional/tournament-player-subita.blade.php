@@ -47,4 +47,7 @@
 		</div>
 	</div>
 
+
+	<livewire:tournaments.tournament-regional.tournament-modal-sorteos id_tournament="{{$id_tournament}}" />
+
 </div>

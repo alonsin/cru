@@ -38,6 +38,11 @@ class TournamentPlayersSubitaTres extends Component
 		$this->loadandupdateDataSubita();
 	}
 
+	public function sortearGanadores()
+	{
+		$this->dispatch('mostrarModalGanadoresModal', '15:00');
+	}
+
 	public function setActiveTab3($tab)
 	{
 		$this->activeTab3 = $tab;

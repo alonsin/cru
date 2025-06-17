@@ -43,6 +43,11 @@ class TournamentPlayersSubitaCinco extends Component
 		$this->activeTab3 = $tab;
 	}
 
+	public function sortearGanadores()
+	{
+		$this->dispatch('mostrarModalGanadoresModal', '17:00');
+	}
+
 	#[On('updateDataFromSubita')]
 	public function updateDataFromSubita()
 	{

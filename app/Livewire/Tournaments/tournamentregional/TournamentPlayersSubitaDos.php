@@ -32,10 +32,17 @@ class TournamentPlayersSubitaDos extends Component
 	public $mesasDisponibles = [];
 	public $mesasOcupadas = [];
 	public $activeTab3 = 'jugadores1';
+	public $jugadoresganadores = [];
+	public $numerosSorteo = [];
 
 	public function mount()
 	{
 		$this->loadandupdateDataSubita();
+	}
+
+	public function sortearGanadores()
+	{
+		$this->dispatch('mostrarModalGanadoresModal', '14:00');
 	}
 
 	public function setActiveTab3($tab)

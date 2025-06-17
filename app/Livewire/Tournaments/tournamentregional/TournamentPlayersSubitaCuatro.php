@@ -38,6 +38,11 @@ class TournamentPlayersSubitaCuatro extends Component
 		$this->loadandupdateDataSubita();
 	}
 
+	public function sortearGanadores()
+	{
+		$this->dispatch('mostrarModalGanadoresModal', '16:00');
+	}
+
 	public function setActiveTab3($tab)
 	{
 		$this->activeTab3 = $tab;

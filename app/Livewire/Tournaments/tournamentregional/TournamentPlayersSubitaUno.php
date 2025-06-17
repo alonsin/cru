@@ -40,32 +40,9 @@ class TournamentPlayersSubitaUno extends Component
 		$this->loadandupdateDataSubita();
 	}
 
-	public function guardarNumerosSorteo()
-	{
-		foreach ($this->numerosSorteo as $id => $numero) {
-			TournamentPlayer::where('id', $id)->update([
-				'SORTEO_SUBITA' => $numero === '' ? null : $numero
-			]);
-		}
-		$this->numerosSorteo = [];
-		$this->dispatch('cerrarModalGanadores');
-		$this->dispatch('sorteos-guardados-subita');
-	}
-
 	public function sortearGanadores()
 	{
-		$this->jugadoresganadores = TournamentPlayer::where('id_tournament', 14)
-			->where('horario', '13:00')
-			->where('R_SUBITA', 1)
-			->get();
-
-		$this->numerosSorteo = [];
-
-		foreach ($this->jugadoresganadores as $jugador) {
-			$this->numerosSorteo[$jugador->id] = $jugador->SORTEO_SUBITA;
-		}
-
-		$this->dispatch('mostrarModalGanadores');
+		$this->dispatch('mostrarModalGanadoresModal', '13:00');
 	}
 
 	public function setActiveTab3($tab)
