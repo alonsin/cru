@@ -53,6 +53,9 @@
 						<button class="nav-link  @if($activeTab === 'subita') active @endif" id="ajuste-tab" wire:click="setActiveTab('subita')" data-bs-toggle="tab" data-bs-target="#ajuste" type="button" role="tab">🎯 Subita</button>
 					</li>
 					<li class="nav-item" role="presentation">
+						<button class="nav-link  @if($activeTab === 'ajusteTo32') active @endif" id="ajuste16-tab" wire:click="setActiveTab('ajusteTo32')" data-bs-toggle="tab" data-bs-target="#ajuste16" type="button" role="tab">👀 Ajuste para 32</button>
+					</li>
+					<li class="nav-item" role="presentation">
 						<button class="nav-link  @if($activeTab === 'ronda16') active @endif" id="ajuste16-tab" wire:click="setActiveTab('ronda16')" data-bs-toggle="tab" data-bs-target="#ajuste16" type="button" role="tab">🎯 Ronda 16</button>
 					</li>
 					<li class="nav-item" role="presentation">
@@ -66,6 +69,9 @@
 				</div>
 				<div class="tab-pane fade @if($activeTab === 'subita') show active @endif" id="ajuste" role="tabpanel">
 					<livewire:tournaments.tournament-regional.tournament-players-subita id_tournament="{{$idtournament}}" />
+				</div>
+				<div class="tab-pane fade @if($activeTab === 'ajusteTo32') show active @endif" id="ajuste16" role="tabpanel">
+					<livewire:tournaments.tournament-regional.tournament-players-ajuste16 id_tournament="{{$idtournament}}" />
 				</div>
 				<div class="tab-pane fade @if($activeTab === 'ronda16') show active @endif" id="ajuste16" role="tabpanel">
 					<livewire:tournaments.tournament-regional.tournament-players-ajuste16 id_tournament="{{$idtournament}}" />

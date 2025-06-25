@@ -1,49 +1,54 @@
 <div>
 
 	<div wire:ignore.self class="modal fade" id="modalGanadores" tabindex="-1" aria-labelledby="modalGanadoresLabel" aria-hidden="true">
-		<div class="modal-dialog modal-md">
+		<div class="modal-dialog modal-lg">
 			<div class="modal-content border-0 shadow">
 				<div class="modal-header bg-light text-dark">
 					<h5 class="modal-title w-100 text-center m-0">
-						<strong>GANADORES DEL HORARIO {{$horario}} Hrs</strong>
+						<strong>🎲 GANADORES DE RONDA DE SUBITA 🎲</strong>
 					</h5>
 					<button type="button" class="btn-close" wire:click="cerrarModalGanadores" aria-label="Cerrar"></button>
 				</div>
 
 				<div class="modal-body">
-					<div class="table-responsive">
-						<table class="table table-hover align-middle text-center">
-							<thead class="table-dark text-white">
-								<tr>
-									<th style="width: 5%;">#</th>
-									<th style="width: 65%;">Nombre del Jugador</th>
-									<th style="width: 30%;">N° Sorteo</th>
-								</tr>
-							</thead>
-							<tbody>
-								@forelse($jugadoresganadores as $index => $jugador)
-								<tr>
-									<td>{{ $index + 1 }}</td>
-									<td class="fw-semibold">{{ $jugador->player->name_player ?? 'Sin nombre' }}</td>
-									<td>
-										<input type="number"
-											class="form-control form-control-sm text-center mx-auto"
-											style="max-width: 80px;"
-											wire:model.defer="numerosSorteo.{{ $jugador->id }}"
-											min="1" />
-									</td>
-								</tr>
-								@empty
-								<tr>
-									<td colspan="3" class="text-muted">No hay jugadores ganadores disponibles.</td>
-								</tr>
-								@endforelse
-							</tbody>
-						</table>
+					@php
+					$chunks = collect($jugadoresganadores)->chunk(11);
+					@endphp
+
+					<div class="d-flex overflow-auto gap-3">
+						@foreach ($chunks as $grupo)
+						<div class="table-responsive" style="min-width: 300px;">
+							<table class="table table-hover align-middle text-center">
+								<thead class="table-dark text-white">
+									<tr>
+										<!-- <th style="width: 5%;">#</th> -->
+										<th style="width: 65%;">Nombre del Jugador</th>
+										<th style="width: 30%;">N° Sorteo</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach ($grupo as $index => $jugador)
+									<tr>
+										<!-- <td>{{ $loop->iteration }}</td> -->
+										<td class="fw-semibold">{{ $jugador->player->name_player ?? 'Sin nombre' }}</td>
+										<td>
+											<input type="number"
+												class="form-control form-control-sm text-center mx-auto"
+												style="max-width: 80px;"
+												wire:model.defer="numerosSorteo.{{ $jugador->id }}"
+												min="1" />
+										</td>
+									</tr>
+									@endforeach
+								</tbody>
+							</table>
+						</div>
+						@endforeach
 					</div>
+
 				</div>
 
-				<div class="modal-footer justify-content-between">
+				<div class="modal-footer justify-content-center">
 					<button class="btn btn-success px-4" wire:click="guardarNumerosSorteo">
 						<i class="bi bi-check-circle me-1"></i> Guardar
 					</button>
@@ -92,6 +97,26 @@
 				text: 'Los sorteos se han guardado correctamente.',
 				timer: 2000,
 				showConfirmButton: false
+			});
+		});
+
+		Livewire.on('error-numero-duplicado', (data) => {
+			Swal.fire({
+				icon: 'warning',
+				title: 'Número Duplicado!',
+				text: data.message,
+				timer: 4000,
+				showConfirmButton: true
+			});
+		});
+
+		Livewire.on('sorteos-repetidos-subita', (data) => {
+			Swal.fire({
+				icon: 'warning',
+				title: 'Numeros Duplicados!',
+				text: data.message,
+				timer: 4000,
+				showConfirmButton: true
 			});
 		});
 	</script>

@@ -67,7 +67,7 @@ class TournamentPlayersSubitaDos extends Component
 
 	public function guardarAjustes()
 	{
-		$this->guardarAjustesSubita1();
+		$this->guardarAjustesSubita1		();
 		$this->loadandupdateDataSubita();
 		$this->dispatch('updateGamesRonda16');
 		$this->dispatch('general-guardado');
