@@ -71,7 +71,7 @@
 					<livewire:tournaments.tournament-regional.tournament-players-subita id_tournament="{{$idtournament}}" />
 				</div>
 				<div class="tab-pane fade @if($activeTab === 'ajusteTo32') show active @endif" id="ajuste16" role="tabpanel">
-					<livewire:tournaments.tournament-regional.tournament-players-ajuste16 id_tournament="{{$idtournament}}" />
+					<livewire:tournaments.tournament-regional.tournament-players-ajuste32 id_tournament="{{$idtournament}}" />
 				</div>
 				<div class="tab-pane fade @if($activeTab === 'ronda16') show active @endif" id="ajuste16" role="tabpanel">
 					<livewire:tournaments.tournament-regional.tournament-players-ajuste16 id_tournament="{{$idtournament}}" />
