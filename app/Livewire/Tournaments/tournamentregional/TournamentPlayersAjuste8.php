@@ -8,7 +8,7 @@ use Livewire\Component;
 use Illuminate\Support\Arr;
 use Livewire\Attributes\On;
 
-class TournamentPlayersAjuste16 extends Component
+class TournamentPlayersAjuste8 extends Component
 {
 
 	public $tournament, $idtournament, $id_tournament;
@@ -64,7 +64,7 @@ class TournamentPlayersAjuste16 extends Component
 	{
 		$this->guardarAjustesSubita1();
 		$this->loadandupdateDataSubita();
-		// $this->dispatch('updateGamesRonda16');
+		$this->dispatch('updateGamesRonda16');
 		$this->dispatch('general-guardado');
 	}
 
@@ -90,7 +90,7 @@ class TournamentPlayersAjuste16 extends Component
 	public function createArrayEnfrentamientos()
 	{
 		$this->enfrentamientos1 = [];
-		$cantidadJugadores = 16; 
+		$cantidadJugadores = 8; 
 		$enfrentamientosNecesarios = intval($cantidadJugadores / 2);
 
 		for ($i = 0; $i < $enfrentamientosNecesarios; $i++) {
@@ -109,7 +109,7 @@ class TournamentPlayersAjuste16 extends Component
 
 		$jugadoresCollection1  = TournamentPlayer::with('player')
 			->where('id_tournament', $this->id_tournament)
-			->whereIn('SORTEO_TO_16', Arr::flatten($this->enfrentamientos1))
+			->whereIn('NUM_8', Arr::flatten($this->enfrentamientos1))
 			->get();
 
 		$this->jugadores1 = $jugadoresCollection1->map(function ($jp) {
@@ -117,9 +117,9 @@ class TournamentPlayersAjuste16 extends Component
 				'id' => $jp->id,
 				'id_player' => $jp->player->id,
 				'nombre' => $jp->player->name_player ?? 'Sin nombre',
-				'SORTEO_TO_16' => $jp->SORTEO_TO_16,
+				'NUM_8' => $jp->NUM_8,
 			];
-		})->keyBy('SORTEO_TO_16')->all();
+		})->keyBy('NUM_8')->all();
 
 		foreach ($this->jugadores1 as $jugador) {
 			$id = $jugador['id_player'];
@@ -129,7 +129,7 @@ class TournamentPlayersAjuste16 extends Component
 				->first();
 
 			if ($tp) {
-				$this->sorteossubita1[$id] = $tp->SORTEO_TO_16;
+				$this->sorteossubita1[$id] = $tp->NUM_8;
 			}
 		}
 	}
@@ -146,7 +146,7 @@ class TournamentPlayersAjuste16 extends Component
 			$jugador2 = $this->jugadores1[$clave2];
 
 			$juego = Game::where('id_tournament', $this->id_tournament)
-				->where('ronda', 4) // o usa $this->ronda si es dinámico
+				->where('ronda', 6) // o usa $this->ronda si es dinámico
 				->where('p1', $jugador1['id_player'])
 				->where('p2', $jugador2['id_player'])
 				->first();
@@ -175,7 +175,7 @@ class TournamentPlayersAjuste16 extends Component
 			$jugador2 = $this->jugadores1[$clave2];
 
 			$juego = Game::where('id_tournament', $this->id_tournament)
-				->where('ronda', 4)
+				->where('ronda', 6)
 				->where('p1', $jugador1['id_player'])
 				->where('p2', $jugador2['id_player'])
 				->first();
@@ -202,7 +202,7 @@ class TournamentPlayersAjuste16 extends Component
 				$jugador2 = $this->jugadores1[$clave2];
 
 				$juego = Game::where('id_tournament', $this->id_tournament)
-					->where('ronda', 4)
+					->where('ronda', 6)
 					->where('p1', $jugador1['id_player'])
 					->where('p2', $jugador2['id_player'])
 					->first();
@@ -233,23 +233,15 @@ class TournamentPlayersAjuste16 extends Component
 						'p2' => $jugador2['id_player'],
 						'wp2' => $wp2,
 						'CP2' => $clave2,
-						'ronda' => 4,
+						'ronda' => 6,
 						'estatus' => $this->estatusSeleccionados1[$index] ?? 0,
 					]);
 				}
 
-				$valorJugador1 = isset($this->sorteossubita1[$jugador1['id_player']]) && $this->sorteossubita1[$jugador1['id_player']] !== ''
-					? (int)$this->sorteossubita1[$jugador1['id_player']]
-					: null;
-
-				$valorJugador2 = isset($this->sorteossubita1[$jugador2['id_player']]) && $this->sorteossubita1[$jugador2['id_player']] !== ''
-					? (int)$this->sorteossubita1[$jugador2['id_player']]
-					: null;
-
 				if ($ganador1) {
 					// Jugador 1 es ganador
 					$updateJugador1 = [
-						'NUM_8' => $index + 1,
+						'NUM_4' => $index + 1, // Asignar el número de enfrentamiento
 					];
 
 					TournamentPlayer::where('id_tournament', $this->id_tournament)
@@ -258,7 +250,7 @@ class TournamentPlayersAjuste16 extends Component
 
 					// Jugador 2 es perdedor
 					$updateJugador2 = [
-						'NUM_8' => null,
+						'NUM_4' => null,
 					];
 
 					TournamentPlayer::where('id_tournament', $this->id_tournament)
@@ -269,7 +261,7 @@ class TournamentPlayersAjuste16 extends Component
 				if ($ganador2) {
 					// Jugador 2 es ganador
 					$updateJugador2 = [
-						'NUM_8' => $index + 1,
+						'NUM_4' => $index + 1, // Asignar el número de enfrentamiento
 					];
 
 					TournamentPlayer::where('id_tournament', $this->id_tournament)
@@ -278,7 +270,7 @@ class TournamentPlayersAjuste16 extends Component
 
 					// Jugador 1 es perdedor
 					$updateJugador1 = [
-						'NUM_8' => null,
+						'NUM_4' => null,
 					];
 
 					TournamentPlayer::where('id_tournament', $this->id_tournament)
@@ -293,6 +285,6 @@ class TournamentPlayersAjuste16 extends Component
 
 	public function render()
 	{
-		return view('livewire.tournaments.tournamentregional.tournament-player-ronda-treintaidos');
+		return view('livewire.tournaments.tournamentregional.tournament-player-ronda-diezseis');
 	}
 }

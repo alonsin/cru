@@ -25,6 +25,7 @@ class TournamentPlayersFinals extends Component
 	public $ganadores4 = [];
 	public $mesasOcupadas = [];
 	public $mesasDisponibles = [];
+	public $mesaSeleccionada = [];
 	public $mesaActual = [];
 	public $juegosGuardados8 = [];
 	public $estatusSeleccionados8 = [];

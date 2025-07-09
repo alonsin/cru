@@ -1,7 +1,7 @@
 <div>
 
 	<div wire:ignore.self class="modal fade" id="modalGanadores" tabindex="-1" aria-labelledby="modalGanadoresLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg">
+		<div class="modal-dialog modal-fullscreen">
 			<div class="modal-content border-0 shadow">
 				<div class="modal-header bg-light text-dark">
 					<h5 class="modal-title w-100 text-center m-0">

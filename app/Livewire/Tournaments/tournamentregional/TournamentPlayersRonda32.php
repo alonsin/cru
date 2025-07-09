@@ -254,8 +254,7 @@ class TournamentPlayersRonda32 extends Component
 				if ($ganador1) {
 					// Jugador 1 es ganador
 					$updateJugador1 = [
-						'AJUSTE_32' => 1,
-						'SORTEO_TO_32' => $valorJugador1,
+						'SORTEO_TO_16' => $index + 1, // Asignar el número de enfrentamiento como valor
 					];
 
 					TournamentPlayer::where('id_tournament', $this->id_tournament)
@@ -264,8 +263,7 @@ class TournamentPlayersRonda32 extends Component
 
 					// Jugador 2 es perdedor
 					$updateJugador2 = [
-						'AJUSTE_32' => null,
-						'SORTEO_TO_32' => null,
+						'SORTEO_TO_16' => null,
 					];
 
 					TournamentPlayer::where('id_tournament', $this->id_tournament)
@@ -276,8 +274,7 @@ class TournamentPlayersRonda32 extends Component
 				if ($ganador2) {
 					// Jugador 2 es ganador
 					$updateJugador2 = [
-						'AJUSTE_32' => 1,
-						'SORTEO_TO_32' => $valorJugador1,
+						'SORTEO_TO_16' =>  $index + 1,
 					];
 
 					TournamentPlayer::where('id_tournament', $this->id_tournament)
@@ -286,8 +283,7 @@ class TournamentPlayersRonda32 extends Component
 
 					// Jugador 1 es perdedor
 					$updateJugador1 = [
-						'AJUSTE_32' => null,
-						'SORTEO_TO_32' => null,
+						'SORTEO_TO_16' => null,
 					];
 
 					TournamentPlayer::where('id_tournament', $this->id_tournament)

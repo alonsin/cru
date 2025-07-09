@@ -59,7 +59,10 @@
 		{{-- Botón de Guardado --}}
 		<div class="d-flex justify-content-end my-3">
 			<button wire:click="guardarAjustes" class="btn btn-success shadow px-4 py-2 d-flex align-items-center gap-2">
-				<i class="bi bi-save"></i> Guardar Juegos
+				<i class="bi bi-save"></i> 💾 Guardar Juegos
+			</button>
+			<button wire:click="guardarAjustes" class="btn btn-primary shadow px-4 py-2 d-flex align-items-center gap-2 ms-2">
+				<i class="bi bi-save"></i> 🔄 Actualizar Juegos
 			</button>
 		</div>
 

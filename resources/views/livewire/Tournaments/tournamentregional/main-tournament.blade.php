@@ -56,13 +56,19 @@
 						<button class="nav-link  @if($activeTab === 'ajusteTo32') active @endif" id="ajuste16-tab" wire:click="setActiveTab('ajusteTo32')" data-bs-toggle="tab" data-bs-target="#ajuste16" type="button" role="tab">👀 Ajuste a 32</button>
 					</li>
 					<li class="nav-item" role="presentation">
-						<button class="nav-link  @if($activeTab === 'ronda32') active @endif" id="ronda32-tab" wire:click="setActiveTab('ronda32')" data-bs-toggle="tab" data-bs-target="#ronda32" type="button" role="tab">🎯 Ronda 32</button>
+						<button class="nav-link  @if($activeTab === 'ronda32') active @endif" id="ronda32-tab" wire:click="setActiveTab('ronda32')" data-bs-toggle="tab" data-bs-target="#ronda32" type="button" role="tab">🎯 R 32</button>
 					</li>
 					<li class="nav-item" role="presentation">
-						<button class="nav-link  @if($activeTab === 'ronda16') active @endif" id="ajuste16-tab" wire:click="setActiveTab('ronda16')" data-bs-toggle="tab" data-bs-target="#ajuste16" type="button" role="tab">🎯 Ronda 16</button>
+						<button class="nav-link  @if($activeTab === 'ronda16') active @endif" id="ajuste16-tab" wire:click="setActiveTab('ronda16')" data-bs-toggle="tab" data-bs-target="#ajuste16" type="button" role="tab">🎯 R 16</button>
 					</li>
 					<li class="nav-item" role="presentation">
-						<button class="nav-link  @if($activeTab === 'finales') active @endif" id="finales-tab" wire:click="setActiveTab('finales')" data-bs-toggle="tab" data-bs-target="#finales" type="button" role="tab">🏆 Finales</button>
+						<button class="nav-link  @if($activeTab === 'ronda8') active @endif" id="ajuste16-tab" wire:click="setActiveTab('ronda8')" data-bs-toggle="tab" data-bs-target="#ajuste8" type="button" role="tab">👀 R 8</button>
+					</li>
+					<li class="nav-item" role="presentation">
+						<button class="nav-link  @if($activeTab === 'ronda4') active @endif" id="ajuste16-tab" wire:click="setActiveTab('ronda4')" data-bs-toggle="tab" data-bs-target="#ajuste4" type="button" role="tab">🎯 R 4</button>
+					</li>
+					<li class="nav-item" role="presentation">
+						<button class="nav-link  @if($activeTab === 'finales') active @endif" id="finales-tab" wire:click="setActiveTab('finales')" data-bs-toggle="tab" data-bs-target="#finales" type="button" role="tab">🏆 Final</button>
 					</li>
 				</ul>
 			</div>
@@ -82,8 +88,14 @@
 				<div class="tab-pane fade @if($activeTab === 'ronda16') show active @endif" id="ajuste16" role="tabpanel">
 					<livewire:tournaments.tournament-regional.tournament-players-ajuste16 id_tournament="{{$idtournament}}" />
 				</div>
+				<div class="tab-pane fade @if($activeTab === 'ronda8') show active @endif" id="ajuste8" role="tabpanel">
+					<livewire:tournaments.tournament-regional.tournament-players-ajuste8 id_tournament="{{$idtournament}}" />
+				</div>
+				<div class="tab-pane fade @if($activeTab === 'ronda4') show active @endif" id="ajuste4" role="tabpanel">
+					<livewire:tournaments.tournament-regional.tournament-players-ajuste4 id_tournament="{{$idtournament}}" />
+				</div>
 				<div class="tab-pane fade @if($activeTab === 'finales') show active @endif" id="finales" role="tabpanel">
-					<livewire:tournaments.tournament-regional.tournament-players-finals id_tournament="{{$idtournament}}" />
+					<livewire:tournaments.tournament-regional.tournament-players-ajuste2 id_tournament="{{$idtournament}}" />
 				</div>
 			</div>
 
