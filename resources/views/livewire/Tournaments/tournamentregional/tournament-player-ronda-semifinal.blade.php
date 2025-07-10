@@ -48,7 +48,8 @@
         }
 
         .jugador-nombre {
-            font-weight: 600;
+            font-weight: 800;
+            font-size: 1.3rem;
         }
 
         .mesa-select,
@@ -122,7 +123,7 @@
                            {{ !$juego ? 'disabled' : '' }}>
                 </div>
 
-                <div class="col-md-2 d-flex align-items-center justify-content-center fs-4">🤝</div>
+                <div class="col-md-2 d-flex align-items-center justify-content-center fs-4">🤝<br>vs</div>
 
                 <div class="col-md-5 d-flex flex-column align-items-center">
                     <div class="jugador-nombre">{{ $jugador2['nombre'] ?? '---' }}</div>
@@ -143,7 +144,7 @@
                     @endphp
 
                     @if ((int) $estatus === 2)
-                        <span class="badge bg-dark fs-6">🎱 MESA {{ $mesaActual }}</span>
+                        <span class="badge bg-dark fs-8">🎱 MESA {{ $mesaActual }}</span>
                     @else
                         <select wire:model="mesaSeleccionada.{{ $juego['id'] }}"
                                 class="form-select mesa-select bg-warning text-dark">

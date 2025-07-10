@@ -139,7 +139,7 @@
 												{{ !$juego ? 'disabled' : '' }}>
 										</td>
 
-										<td><span class="fs-5">🤝</span></td>
+										<td><span class="fs-5">🤝<br>VS</span></td>
 
 										<td>
 											<input type="checkbox"

@@ -106,12 +106,14 @@
 
 	@script
 	<script>
-		Livewire.on('error-duplicados-sorteo', e => {
+		Livewire.on('duplicados-sorteo-regional', () => {
+		
 			Swal.fire({
-				icon: 'error',
-				title: 'Error',
-				html: '<b>No se puede guardar</b><br>Hay números de sorteo repetidos en este horario.',
-				confirmButtonText: 'Entendido'
+				icon: 'warning',
+				title: 'Números Duplicados!',
+				text: 'Por favor, verifica los números de los jugadores.',
+				timer: 4000,
+				showConfirmButton: true
 			});
 		});
 

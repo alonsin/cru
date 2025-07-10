@@ -6,11 +6,14 @@ use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\Player;
 use App\Models\TournamentPlayer;
+use App\Traits\CreateGames;
 use Illuminate\Database\Eloquent\Builder;
 
 class TournamentPlayersTable extends DataTableComponent
 {
-    protected $listeners = ['refreshTablePlayersTournament' => 'refreshtable', 'setSaveSorteo'];
+    use CreateGames;
+
+    protected $listeners = ['refreshTablePlayersTournament' => 'refreshtable', 'setSaveSorteo1'];
     protected $model = Player::class;
     public array $inputs = [];
     protected $index = 0;
@@ -43,36 +46,52 @@ class TournamentPlayersTable extends DataTableComponent
             ->toArray();
     }
 
-    public function setSaveSorteo()
+    public function setSaveSorteo1()
     {
+        // dd("diste click en guardar sorteos");
         $valores = array_filter($this->inputs, function ($valor) {
             return is_numeric($valor) && $valor >= 0 && $valor <= 999;
         });
 
+
         $conteo = array_count_values($valores);
+        // dd($conteo);
+
         $duplicados = array_filter($conteo, function ($count) {
             return $count > 1;
         });
 
+        // dd($duplicados);
+
+
         if (!empty($duplicados)) {
-            $this->dispatch('error-duplicados-sorteo');
-            return;
-        }
+            // dd("entrando aqui weeoi");
+            $this->dispatch('duplicados-sorteo-regional');
+            // return;
+        } else {
+            foreach ($this->inputs as $id => $valor) {
+                if (!is_numeric($valor) || $valor < 0 || $valor > 999) {
+                    continue;
+                }
 
-        foreach ($this->inputs as $id => $valor) {
-            if (!is_numeric($valor) || $valor < 0 || $valor > 999) {
-                continue;
+                $registro = TournamentPlayer::find($id);
+                if ($registro) {
+                    $registro->sorteo_principal = $valor;
+                    $registro->save();
+                }
             }
 
-            $registro = TournamentPlayer::find($id);
-            if ($registro) {
-                $registro->sorteo_principal = $valor;
-                $registro->save();
-            }
-        }
+            //// CREAR JUEGOS DE 1:00 PM 
 
-        $this->dispatch('updateGruposTables');
-        $this->dispatch('sorteos-guardados');
+            $this->crearJuegosRonda('sorteo_principal', 22, $this->idtournament, 11);
+
+            //// HACER DISPATCH PARA REFRESCAR LOS JUEGOS ACTUALES YA GUARDADOS
+            $this->dispatch('refreshAllDataSubitaUno');
+
+
+            $this->dispatch('updateGruposTables');
+            $this->dispatch('sorteos-guardados');
+        }
     }
 
     public function refreshtable()

@@ -37,7 +37,7 @@
 							<i class="bi bi-plus-circle me-1"></i> Agregar Jugador
 						</button>
 
-						<button wire:click="saveSorteo()" class="btn btn-secondary btn-sm ms-2">
+						<button wire:click="saveSorteo1()" class="btn btn-secondary btn-sm ms-2">
 							<i class="bi bi-save me-1"></i> Guardar Sorteo
 						</button>
 					</div>
@@ -51,7 +51,7 @@
 							<i class="bi bi-plus-circle me-1"></i> Agregar Jugador
 						</button>
 
-						<button wire:click="saveSorteo()" class="btn btn-secondary btn-sm ms-2">
+						<button wire:click="saveSorteo2()" class="btn btn-secondary btn-sm ms-2">
 							<i class="bi bi-save me-1"></i> Guardar Sorteo
 						</button>
 					</div>
@@ -65,7 +65,7 @@
 							<i class="bi bi-plus-circle me-1"></i> Agregar Jugador
 						</button>
 
-						<button wire:click="saveSorteo()" class="btn btn-secondary btn-sm ms-2">
+						<button wire:click="saveSorteo3()" class="btn btn-secondary btn-sm ms-2">
 							<i class="bi bi-save me-1"></i> Guardar Sorteo
 						</button>
 					</div>
@@ -79,7 +79,7 @@
 							<i class="bi bi-plus-circle me-1"></i> Agregar Jugador
 						</button>
 
-						<button wire:click="saveSorteo()" class="btn btn-secondary btn-sm ms-2">
+						<button wire:click="saveSorteo4()" class="btn btn-secondary btn-sm ms-2">
 							<i class="bi bi-save me-1"></i> Guardar Sorteo
 						</button>
 					</div>
@@ -93,7 +93,7 @@
 							<i class="bi bi-plus-circle me-1"></i> Agregar Jugador
 						</button>
 
-						<button wire:click="saveSorteo()" class="btn btn-secondary btn-sm ms-2">
+						<button wire:click="saveSorteo5()" class="btn btn-secondary btn-sm ms-2">
 							<i class="bi bi-save me-1"></i> Guardar Sorteo
 						</button>
 					</div>

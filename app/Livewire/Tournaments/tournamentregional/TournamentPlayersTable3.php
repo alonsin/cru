@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class TournamentPlayersTable3 extends DataTableComponent
 {
-    protected $listeners = ['refreshTablePlayersTournament' => 'refreshtable', 'setSaveSorteo'];
+    protected $listeners = ['refreshTablePlayersTournament' => 'refreshtable', 'setSaveSorteo3'];
     protected $model = Player::class;
     public array $inputs = [];
     protected $index = 0;
@@ -44,7 +44,7 @@ class TournamentPlayersTable3 extends DataTableComponent
             ->toArray();
     }
 
-    public function setSaveSorteo()
+    public function setSaveSorteo3()
     {
         $valores = array_filter($this->inputs, function ($valor) {
             return is_numeric($valor) && $valor >= 0 && $valor <= 999;
@@ -56,7 +56,7 @@ class TournamentPlayersTable3 extends DataTableComponent
         });
 
         if (!empty($duplicados)) {
-            $this->dispatch('error-duplicados-sorteo');
+            $this->dispatch('duplicados-sorteo-regional');
             return;
         }
 

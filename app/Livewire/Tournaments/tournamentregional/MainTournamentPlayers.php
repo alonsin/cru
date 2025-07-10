@@ -27,9 +27,27 @@ class MainTournamentPlayers extends Component
         );
     }
 
-    public function saveSorteo()
+    public function saveSorteo1()
     {
-        $this->dispatch('setSaveSorteo');
+        $this->dispatch('setSaveSorteo1');
+    }
+
+    public function saveSorteo2()
+    {
+        $this->dispatch('setSaveSorteo2');
+    }
+    public function saveSorteo3()
+    {
+       
+        $this->dispatch('setSaveSorteo3');
+    }
+    public function saveSorteo4()
+    {
+        $this->dispatch('setSaveSorteo4');
+    }
+    public function saveSorteo5()
+    {
+        $this->dispatch('setSaveSorteo5');
     }
 
     public function render()
