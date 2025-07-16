@@ -6,10 +6,12 @@ use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\Player;
 use App\Models\TournamentPlayer;
+use App\Traits\CreateGames;
 use Illuminate\Database\Eloquent\Builder;
 
 class TournamentPlayersTable4 extends DataTableComponent
 {
+    use CreateGames;
     protected $listeners = ['refreshTablePlayersTournament' => 'refreshtable', 'setSaveSorteo4'];
     protected $model = Player::class;
     public array $inputs = [];
@@ -71,6 +73,12 @@ class TournamentPlayersTable4 extends DataTableComponent
                 $registro->save();
             }
         }
+
+        //// CREAR JUEGOS DE 1:00 PM 
+        $this->crearJuegosRonda('sorteo_principal', 22, $this->idtournament, 11);
+
+        //// HACER DISPATCH PARA REFRESCAR LOS JUEGOS ACTUALES YA GUARDADOS
+        $this->dispatch('refreshAllDataSubitaCuatro');
 
         $this->dispatch('updateGruposTables');
         $this->dispatch('sorteos-guardados');

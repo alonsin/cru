@@ -90,12 +90,13 @@ class TournamentPlayersAjuste32 extends Component
 	public function createArrayEnfrentamientos()
 	{
 		$this->enfrentamientos1 = [];
-		$cantidadJugadores = 55;
+		$cantidadJugadores = 51; /// Cantidad de jugadores que entran a la subita, 
+		// 51 es el total de jugadores que entran a la subita, 14 son los que entran a la subita y 37 son los que entran por sorteo
 		$objetivoJugadores = 32;
 		$enfrentamientosNecesarios = $cantidadJugadores - $objetivoJugadores;
 
 		for ($i = 0; $i < $enfrentamientosNecesarios; $i++) {
-			$jugador1 = 10 + $i;
+			$jugador1 = 14 + $i;   ////// 14 es el primer jugador que entra a la subita
 			$jugador2 = $cantidadJugadores - $i;
 			$this->enfrentamientos1[] = [strval($jugador1), strval($jugador2)];
 		}

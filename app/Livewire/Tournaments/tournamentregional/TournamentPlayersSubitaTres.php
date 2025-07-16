@@ -48,6 +48,12 @@ class TournamentPlayersSubitaTres extends Component
 		$this->activeTab3 = $tab;
 	}
 
+	#[On('refreshAllDataSubitaTres')]
+	public function refreshAllDataSubitaTres()
+	{
+		$this->loadandupdateDataSubita();
+	}
+
 	#[On('updateDataFromSubita')]
 	public function updateDataFromSubita()
 	{
@@ -149,7 +155,7 @@ class TournamentPlayersSubitaTres extends Component
 			$jugador2 = $this->jugadores1[$clave2];
 
 			$juego = Game::where('id_tournament', $this->id_tournament)
-				->where('ronda', 2) // o usa $this->ronda si es dinámico
+				->where('ronda', 11) // o usa $this->ronda si es dinámico
 				->where('p1', $jugador1['id_player'])
 				->where('p2', $jugador2['id_player'])
 				->first();
@@ -178,7 +184,7 @@ class TournamentPlayersSubitaTres extends Component
 			$jugador2 = $this->jugadores1[$clave2];
 
 			$juego = Game::where('id_tournament', $this->id_tournament)
-				->where('ronda', 2)
+				->where('ronda', 11)
 				->where('p1', $jugador1['id_player'])
 				->where('p2', $jugador2['id_player'])
 				->first();
@@ -207,7 +213,7 @@ class TournamentPlayersSubitaTres extends Component
 
 
 				$juego = Game::where('id_tournament', $this->id_tournament)
-					->where('ronda', 2)
+					->where('ronda', 11)
 					->where('p1', $jugador1['id_player'])
 					->where('p2', $jugador2['id_player'])
 					->first();
@@ -241,7 +247,7 @@ class TournamentPlayersSubitaTres extends Component
 						'p2' => $jugador2['id_player'],
 						'wp2' => $wp2,
 						'CP2' => $clave2,
-						'ronda' => 2,
+						'ronda' => 11,
 						'estatus' => $this->estatusSeleccionados1[$index] ?? 0,
 					]);
 

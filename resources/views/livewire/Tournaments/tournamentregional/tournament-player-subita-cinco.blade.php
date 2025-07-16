@@ -86,6 +86,7 @@
 								$rowClass = $estatus == 1 ? 'table-warning' : ($estatus == 2 ? 'table-success' : '');
 								@endphp
 								<tr class="{{ $rowClass }}">
+									{{-- Estado --}}
 									<td class="col-estado text-center align-middle">
 										@if ($juego)
 										@php

@@ -10,7 +10,6 @@ use Livewire\Attributes\On;
 
 class TournamentPlayersSubitaCuatro extends Component
 {
-
 	public $tournament, $idtournament, $id_tournament;
 	public $playersTournament = [];
 	public $enfrentamientos = [];
@@ -40,12 +39,18 @@ class TournamentPlayersSubitaCuatro extends Component
 
 	public function sortearGanadores()
 	{
-		$this->dispatch('mostrarModalGanadoresModal', '16:00');
+		$this->dispatch('mostrarModalGanadoresModal', '16:00');	
 	}
 
 	public function setActiveTab3($tab)
 	{
 		$this->activeTab3 = $tab;
+	}
+
+	#[On('refreshAllDataSubitaCuatro')]
+	public function refreshAllDataSubitaCuatro()
+	{
+		$this->loadandupdateDataSubita();
 	}
 
 	#[On('updateDataFromSubita')]
@@ -149,7 +154,7 @@ class TournamentPlayersSubitaCuatro extends Component
 			$jugador2 = $this->jugadores1[$clave2];
 
 			$juego = Game::where('id_tournament', $this->id_tournament)
-				->where('ronda', 2) // o usa $this->ronda si es dinámico
+				->where('ronda', 11) // o usa $this->ronda si es dinámico
 				->where('p1', $jugador1['id_player'])
 				->where('p2', $jugador2['id_player'])
 				->first();
@@ -178,7 +183,7 @@ class TournamentPlayersSubitaCuatro extends Component
 			$jugador2 = $this->jugadores1[$clave2];
 
 			$juego = Game::where('id_tournament', $this->id_tournament)
-				->where('ronda', 2)
+				->where('ronda', 11)
 				->where('p1', $jugador1['id_player'])
 				->where('p2', $jugador2['id_player'])
 				->first();
@@ -207,7 +212,7 @@ class TournamentPlayersSubitaCuatro extends Component
 
 
 				$juego = Game::where('id_tournament', $this->id_tournament)
-					->where('ronda', 2)
+					->where('ronda', 11)
 					->where('p1', $jugador1['id_player'])
 					->where('p2', $jugador2['id_player'])
 					->first();
@@ -241,7 +246,7 @@ class TournamentPlayersSubitaCuatro extends Component
 						'p2' => $jugador2['id_player'],
 						'wp2' => $wp2,
 						'CP2' => $clave2,
-						'ronda' => 2,
+						'ronda' => 11,
 						'estatus' => $this->estatusSeleccionados1[$index] ?? 0,
 					]);
 

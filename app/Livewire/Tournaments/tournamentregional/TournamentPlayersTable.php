@@ -82,7 +82,6 @@ class TournamentPlayersTable extends DataTableComponent
             }
 
             //// CREAR JUEGOS DE 1:00 PM 
-
             $this->crearJuegosRonda('sorteo_principal', 22, $this->idtournament, 11);
 
             //// HACER DISPATCH PARA REFRESCAR LOS JUEGOS ACTUALES YA GUARDADOS

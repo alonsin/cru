@@ -35,7 +35,7 @@ class TournamentModalSorteos extends Component
 
 	public function guardarNumerosSorteo()
 	{
-		$bais = 9;
+		$bais = 13;
 		$this->getNumerosAsignados();
 
 		// Validar que los números no se repiten
@@ -46,7 +46,7 @@ class TournamentModalSorteos extends Component
 			$this->dispatch('sorteos-repetidos-subita', message: 'Hay numeros de sorteo repetidos, favor de revisar.');
 			return;
 		}
-		// Guardar los números si no hay duplicados
+		// Guardar los números si no hay duplicados 
 		foreach ($this->numerosSorteo as $id => $numero) {
 			if ($numero <= $bais) {
 				TournamentPlayer::where('id', $id)->update([
