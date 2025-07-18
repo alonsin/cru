@@ -86,12 +86,7 @@ class TournamentPlayersSubitaCuatro extends Component
 
 	public function cargarMesasDisponibles()
 	{
-		$this->mesasOcupadas = Game::where('id_tournament', $this->id_tournament)
-			->where('estatus', 1)
-			->pluck('mesa')
-			->filter() // evitar valores nulos
-			->unique()
-			->toArray();
+		$this->mesasOcupadas = [];/// SIMULAMOS QUE NO HAY NINGUNA MESA OCUPADA 
 		$this->mesasDisponibles = array_diff(range(1, 11), $this->mesasOcupadas);
 	}
 

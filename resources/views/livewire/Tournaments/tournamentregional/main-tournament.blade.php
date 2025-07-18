@@ -65,10 +65,10 @@
 						<button class="nav-link  @if($activeTab === 'ronda8') active @endif" id="ajuste16-tab" wire:click="setActiveTab('ronda8')" data-bs-toggle="tab" data-bs-target="#ajuste8" type="button" role="tab">👀 R 8</button>
 					</li>
 					<li class="nav-item" role="presentation">
-						<button class="nav-link  @if($activeTab === 'ronda4') active @endif" id="ajuste16-tab" wire:click="setActiveTab('ronda4')" data-bs-toggle="tab" data-bs-target="#ajuste4" type="button" role="tab">🎯 R 4</button>
+						<button class="nav-link  @if($activeTab === 'ronda4') active @endif" id="ajuste16-tab" wire:click="setActiveTab('ronda4')" data-bs-toggle="tab" data-bs-target="#ajuste4" type="button" role="tab">🎯 SEMIFINALES</button>
 					</li>
 					<li class="nav-item" role="presentation">
-						<button class="nav-link  @if($activeTab === 'finales') active @endif" id="finales-tab" wire:click="setActiveTab('finales')" data-bs-toggle="tab" data-bs-target="#finales" type="button" role="tab">🏆 Final</button>
+						<button class="nav-link  @if($activeTab === 'finales') active @endif" id="finales-tab" wire:click="setActiveTab('finales')" data-bs-toggle="tab" data-bs-target="#finales" type="button" role="tab">🏆 FINAL</button>
 					</li>
 				</ul>
 			</div>

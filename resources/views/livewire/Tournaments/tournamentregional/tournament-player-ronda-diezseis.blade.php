@@ -6,6 +6,7 @@
             padding: 1rem;
             margin-bottom: 1rem;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            position: relative; /* Para posicionar selects en esquina */
         }
 
         .card-match.finalizado {
@@ -60,6 +61,16 @@
             width: auto;
             min-width: 120px;
         }
+
+        .selects-wrapper {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            align-items: flex-end;
+        }
     </style>
 
     {{-- Botones de acción --}}
@@ -101,14 +112,26 @@
             <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
                 <span class="badge estado-badge {{ $claseEstado }}">{{ $estadoTexto }}</span>
 
-                @if ($juego)
-                    <select wire:model="estatusSeleccionados1.{{ $juego['id'] }}"
-                            class="form-select estado-select {{ $claseEstado }}">
-                        <option value="0">⏳ Pendiente</option>
-                        <option value="1">🎯 En juego</option>
-                        <option value="2">✅ Finalizado</option>
-                    </select>
-                @endif
+                <div class="selects-wrapper">
+                    @if ($juego)
+                        <select wire:model="estatusSeleccionados1.{{ $juego['id'] }}"
+                                class="form-select estado-select {{ $claseEstado }}">
+                            <option value="0">⏳ Pendiente</option>
+                            <option value="1">🎯 En juego</option>
+                            <option value="2">✅ Finalizado</option>
+                        </select>
+
+                        @if ((int) $estatus !== 2)
+                            <select wire:model="mesaSeleccionada.{{ $juego['id'] }}"
+                                    class="form-select mesa-select bg-warning text-dark">
+                                <option value="">Selecciona mesa</option>
+                                @foreach (range(1, 11) as $mesa)
+                                    <option value="{{ $mesa }}">MESA {{ $mesa }}</option>
+                                @endforeach
+                            </select>
+                        @endif
+                    @endif
+                </div>
             </div>
 
             <div class="row text-center">
@@ -146,13 +169,7 @@
                     @if ((int) $estatus === 2)
                         <span class="badge bg-dark fs-8">🎱 MESA {{ $mesaActual }}</span>
                     @else
-                        <select wire:model="mesaSeleccionada.{{ $juego['id'] }}"
-                                class="form-select mesa-select bg-warning text-dark">
-                            <option value="">Selecciona mesa</option>
-                            @foreach (range(1, 11) as $mesa)
-                                <option value="{{ $mesa }}">MESA {{ $mesa }}</option>
-                            @endforeach
-                        </select>
+                        {{-- Ya se muestra arriba cuando no está finalizado --}}
                     @endif
                 @else
                     <span class="text-muted">Sin juego registrado</span>
